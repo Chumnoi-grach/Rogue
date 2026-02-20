@@ -1,5 +1,11 @@
 plugins {
+    id("application")  // Подключаем плагин application
     id("java")
+}
+
+// Указываем главный класс приложения
+application {
+    mainClass.set("org.example.Main")  // Например, "com.example.Main"
 }
 
 group = "org.example"
