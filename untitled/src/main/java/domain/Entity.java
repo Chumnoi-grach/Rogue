@@ -2,7 +2,7 @@ package domain;
 
 //Интерфейс сущность: Для игрока, монстров, предметов
 public interface Entity {
-    Position getPosition();
+    public Position getPosition();
 
     void setPosition(Position position);
 }

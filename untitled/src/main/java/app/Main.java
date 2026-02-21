@@ -1,12 +1,54 @@
 package app;
 
-import com.googlecode.lanterna.TextColor;
-import com.googlecode.lanterna.input.KeyStroke;
-import com.googlecode.lanterna.input.KeyType;
-import presentation.Presentation;
+//import com.googlecode.lanterna.TextColor;
+//import com.googlecode.lanterna.input.KeyStroke;
+//import com.googlecode.lanterna.input.KeyType;
+//import presentation.Presentation;
+
+import domain.Player;
+import domain.Position;
+import domain.items.Scroll;
+
+import static domain.items.ScrollType.HEALTH;
 
 public class Main {
     public static void main(String[] args)  throws Exception {
+
+        Player player = new Player("Andrey", new Position(5,10));
+
+        System.out.printf("name: %s, health: %d/%d, pos: %s\n",
+                player.getName(), player.getHealth(),
+                player.getMaxHealth(), player.getPosition()
+        );
+
+        System.out.println("Передвинули персонажа");
+        player.move(1,1);
+
+        System.out.printf("name: %s, health: %d/%d, pos: %s\n",
+                player.getName(), player.getHealth(),
+                player.getMaxHealth(), player.getPosition()
+        );
+
+        //Создаем свиток
+        Scroll scroll = new Scroll("Свиток здоровья",
+                new Position(-1,-1),
+                HEALTH,
+                25);
+
+        //Применяем свиток на игрока
+        scroll.useOn(player);
+
+        System.out.printf("name: %s, health: %d/%d, pos: %s\n",
+                player.getName(), player.getHealth(),
+                player.getMaxHealth(), player.getPosition()
+        );
+
+
+
+    }
+}
+
+/*
         Presentation presentation = new Presentation();
         presentation.start();
 
@@ -66,5 +108,4 @@ public class Main {
             }
         }
         presentation.end();
-    }
-}
+ */
