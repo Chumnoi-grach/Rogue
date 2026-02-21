@@ -92,11 +92,11 @@ public class Room {
 
     //Проверить что позиция не занята
     private boolean isPositionFree(Position position) {
-        for (Entity entity : entities) {
-            if (position.equal(entity.getPosition())) {
-                return false;
-            }
-        }
+//        for (Entity entity : entities) {
+//            if (position.equal(entity.getPosition())) {
+//                return false;
+//            }
+//        }
         return true;
     }
 
