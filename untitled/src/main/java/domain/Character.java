@@ -1,8 +1,8 @@
 package domain;
 
 public abstract class Character {
-    protected String TipesOfCharacters = "gOsvz@";
-    private char type;              // Ghost, Ogre, SnakeMagician, Vampire, Zombie, Player
+    protected String TypesOfCharacters = "gOsvz@";
+    private String type;              // Ghost, Ogre, SnakeMagician, Vampire, Zombie, Player
     private int strength;             // сила
     private int dexterity;            // ловкость
     private int maxHealth;            // максимальное здоровье
@@ -11,13 +11,16 @@ public abstract class Character {
     private int roomHeight;
     private int roomWidth;
 
+    //ход
+    //Position
+
     //Положение в комнате
     private int x;
     private int y;
 
     protected Character(char type, int level, int x, int y, int roomHeight, int roomWidth) {
         this.type = type;
-        if (!TipesOfCharacters.chars().anyMatch(c -> c == type)) {
+        if (!TypesOfCharacters.chars().anyMatch(c -> c == type)) {
             throw new IllegalArgumentException("Не соответствие типу: g, O, s, v, z, @");
         }
         this.strength = calculateStrength(type, level);

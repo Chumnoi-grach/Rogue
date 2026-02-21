@@ -6,9 +6,7 @@ public class Enemy extends Character {
     //Состояния врага Возможно добавление
     enum EnemyState {
         WANDERING,          //БЛУЖДАЮЩИЙ
-        CHASING,            //ПРЕСЛЕДУЮЩИЙ
-        SLEEPING,           //СПЯЩИЙ
-        FiGHTING            //В БОЮ
+        CHASING            //ПРЕСЛЕДУЮЩИЙ
     }
     private int hostilityRange;
     private EnemyState state = EnemyState.WANDERING;
@@ -24,7 +22,7 @@ public class Enemy extends Character {
     public Enemy(char type, int level, int x, int y, int roomHeight, int roomWidth) {
         super(type, level, x, y, roomHeight, roomWidth);
 
-        if (!TipesOfCharacters.chars().anyMatch(c -> c == type) && type != '@') {
+        if (!TypesOfCharacters.chars().anyMatch(c -> c == type) && type != '@') {
             throw new IllegalArgumentException("Не соответствие типу: g, O, s, v, z");
         }
         this.hostilityRange = calculateHostility(type, level); // пример масштабирования
