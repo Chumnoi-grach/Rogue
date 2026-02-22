@@ -13,11 +13,15 @@ public class Game {
         this.player = new Player("John", new Position(5, 5)); // стартовая позиция
 
         // генерируем первый уровень
-        this.currentLevel = generator.generateLevel(1);
+        generateLevel(1);
 
         // размещаем игрока
         currentLevel.getRoom(0).putEntintyToRndPlace(player);
 
+    }
+
+    public void generateLevel(int levelNumber) {
+        this.currentLevel = generator.generateLevel(levelNumber);
     }
 
     public Level getCurrentLevel() {

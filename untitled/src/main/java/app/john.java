@@ -5,21 +5,51 @@ package app;
 //import com.googlecode.lanterna.input.KeyType;
 //import presentation.Presentation;
 
+import com.googlecode.lanterna.input.KeyStroke;
+import com.googlecode.lanterna.input.KeyType;
 import domain.*;
 import domain.items.Scroll;
 
 import domain.Player;
 import domain.Position;
 import domain.items.Scroll;
+import presentation.Presentation;
 
+import static com.googlecode.lanterna.input.KeyType.Enter;
 import static domain.items.ScrollType.HEALTH;
 
 public class john {
-    public static void main(String[] args)  throws Exception {
-//        Game currentGame = new Game();
-//        currentGame.getCurrentLevel();
+    public static void main(String[] args) throws Exception {
+        Presentation presentation = new Presentation();
+        presentation.start();
 
+        Game currentGame = new Game();
+        boolean isRunning = true;
 
+        while (isRunning) {
+            presentation.printLevel(currentGame.getCurrentLevel());
+            presentation.refresh();
+
+            KeyStroke keyStroke = presentation.getScreen().readInput();
+
+            if (keyStroke != null) {
+                KeyType keyType = keyStroke.getKeyType();
+
+                switch (keyType) {
+                    case Escape:
+                        System.out.println("Выход из программы");
+                        isRunning = false; // выход из цикла
+                        break;
+
+                    default:
+                        System.out.println("Генерируем новый уровень");
+                        currentGame.generateLevel(1);
+                        break;
+                }
+            }
+        }
+
+        presentation.end(); // закрываем presentation после цикла
     }
 }
 
