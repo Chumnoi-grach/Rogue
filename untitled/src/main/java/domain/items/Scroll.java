@@ -1,25 +1,38 @@
 package domain.items;
 
 import domain.Entity;
+import domain.player.Player;
 import domain.Position;
-import domain.Character_tmp;
+import domain.Character;
 
-public class Scroll implements Entity {
-    private final String name;              // Название свитка
-    private final Position position;        // final - положение не меняется
-    private final ScrollType type;          // Тип свитка (enum)
-    private final int increaseRate;         // На сколько повышает характеристику
+public class Scroll extends BaseItem implements Entity, Backpackable {
+    private final ConsumableType effectType;          // Тип свитка (enum)
+    private final int bonus;         // На сколько повышает характеристику
 
-    public Scroll(String name, Position position, ScrollType type, int increaseRate) {
-        this.name = name;
-        this.position = position;
-        this.type = type;
-        this.increaseRate = increaseRate;
+    public Scroll(String name, char symbol, int bonus, ConsumableType effectType, Position position) {
+        super(name, symbol, ItemType.SCROLL, position);
+        this.effectType = effectType;
+        this.bonus = bonus;
     }
 
-    @Override
-    public Position getPosition() {
-        return position;
+    public void apply(Player player) {
+        switch (effectType) {
+            case HEALTH:
+                //здесь потом заменить вывод сообщения под статусную строку
+                System.out.printf("%s зачитал %s и увеличил максимальное здоровье до %d\n",
+                        player.getType(), name, player.getMaxHealth() + bonus
+                );
+                player.setMaxHealth(player.getMaxHealth() + bonus);
+                break;
+            case STRENGTH:
+                player.setStrength(player.getStrength() + bonus);
+                System.out.println(name + " увеличивает силу на " + bonus + "!");
+                break;
+            case DEXTERITY:
+                player.setDexterity(player.getDexterity() + bonus);
+                System.out.println(name + " увеличивает ловкость на " + bonus + "!");
+                break;
+        }
     }
 
     @Override
@@ -27,42 +40,19 @@ public class Scroll implements Entity {
         throw new UnsupportedOperationException("Свиток нельзя переместить!");
     }
 
-    public String getName() {
-        return name;
+    public ConsumableType getConsumableType() {
+        return effectType;
     }
 
-    public ScrollType getType() {
-        return type;
-    }
-
-    public int getIncreaseRate() {
-        return increaseRate;
+    public int getBonus() {
+        return bonus;
     }
 
     @Override
     public String toString() {
         return String.format("Свиток '%s' (%s +%d) на %s",
-                name, type, increaseRate, position);
+                name, type, bonus, position);
     }
 
-    /**
-     * Использовать свиток на персонаже
-     * @param character персонаж, на котором используется свиток
-     */
-    public void useOn(Character_tmp character) {
-        switch (type) {
-            case HEALTH:
-                //здесь потом заменить вывод сообщения под статусную строку
-                System.out.printf("%s зачитал %s и увеличил максимальное здоровье до %d\n",
-                        character.getName(), name, character.getMaxHealth() + increaseRate
-                        );
-                character.setMaxHealth(character.getMaxHealth() + increaseRate);
-                break;
-//            case STRENGTH:
-//                character.setStrength(character.getStrength() + increaseRate);
-//                System.out.println(name + " увеличивает силу на " + increaseRate + "!");
-//                break;
-            // ... другие типы
-        }
-    }
+
 }

@@ -1,6 +1,9 @@
 package domain.monsters;
 
 import domain.Character;
+import domain.Position;
+
+import java.util.List;
 
 public class Enemy extends Character {
     //Состояния врага Возможно добавление
@@ -8,6 +11,8 @@ public class Enemy extends Character {
         WANDERING,          //БЛУЖДАЮЩИЙ
         CHASING            //ПРЕСЛЕДУЮЩИЙ
     }
+    List<String> typesOfEnemy = List.of("Ghost", "Ogre", "SnakeMagician", "Vampire", "Zombie");
+
     private int hostilityRange;
     private EnemyState state = EnemyState.WANDERING;
     private boolean firstHitMiss = false;   // для вампира — первый удар по нему всегда промах
@@ -19,27 +24,27 @@ public class Enemy extends Character {
         return this.EnemyType;
     }
 
-    public Enemy(char type, int level, int x, int y, int roomHeight, int roomWidth) {
-        super(type, level, x, y, roomHeight, roomWidth);
+    public Enemy(String type, int level, Position position) {
+        super(type, level, position);
 
-        if (!TypesOfCharacters.chars().anyMatch(c -> c == type) && type != '@') {
-            throw new IllegalArgumentException("Не соответствие типу: g, O, s, v, z");
+        if (!typesOfEnemy.contains(type) && type != "Player") {
+            throw new IllegalArgumentException("Не соответствие типу: Ghost, Ogre, SnakeMagician, Vampire, Zombie");
         }
         this.hostilityRange = calculateHostility(type, level); // пример масштабирования
-        this.firstHitMiss = (type == 'v');
+        this.firstHitMiss = (type == "Vampire");
     }
 
-    public int calculateHostility(char type, int level) {
+    public int calculateHostility(String type, int level) {
         switch (type) {
-            case 'z':
+            case "Zombie":
                 return 3 + level / 4;
-            case 'O':
+            case "Ogre":
                 return 3 + level / 4;
-            case 's':
+            case "SnakeMagician":
                 return 4 + level / 3;
-            case 'v':
+            case "Vampire":
                 return 5 + level / 2;
-            case 'g':
+            case "Ghost":
                 return 2;
             default:
                 return 0;

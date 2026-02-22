@@ -1,63 +1,134 @@
 package domain;
 
-public abstract class Character {
-    protected String TypesOfCharacters = "gOsvz@";
-    private String type;              // Ghost, Ogre, SnakeMagician, Vampire, Zombie, Player
+import java.util.List;
+
+public abstract class Character implements Entity{
+    List<String> types = List.of("Ghost", "Ogre", "SnakeMagician", "Vampire", "Zombie", "Player");
+    private String type;
+
+
     private int strength;             // сила
     private int dexterity;            // ловкость
     private int maxHealth;            // максимальное здоровье
     private int currentHealth;        // текущее здоровье
+
     private int level = 0;
-    private int roomHeight;
-    private int roomWidth;
+    private Position position;
 
-    //ход
-    //Position
 
-    //Положение в комнате
-    private int x;
-    private int y;
-
-    protected Character(char type, int level, int x, int y, int roomHeight, int roomWidth) {
+    protected Character(String type, int level, Position position) {
         this.type = type;
-        if (!TypesOfCharacters.chars().anyMatch(c -> c == type)) {
-            throw new IllegalArgumentException("Не соответствие типу: g, O, s, v, z, @");
+        if (!types.contains(type)) {
+            throw new IllegalArgumentException("Не соответствие типу: Ghost, Ogre, SnakeMagician, Vampire, Zombie, Player: " + type);
         }
         this.strength = calculateStrength(type, level);
         this.dexterity = calculateDexterity(type, level);
         this.maxHealth = calculateMaxHealth(type, level);
         this.currentHealth = this.maxHealth;
-        this.x = x;
-        this.y = y;
-        this.roomHeight = roomHeight;
-        this.roomWidth = roomWidth;
+        this.position = position;
         this.level = level;
-        if (type == '@') this.level = 0;
+        if (type == "Player") this.level = 0;
     }
 
     // Геттеры
-    public int getStrength() {
-        return strength;
+    public String getType() {return type;}
+
+    public int getStrength() {return strength;}
+
+    public int getDexterity() {return dexterity;}
+
+    public int getMaxHealth() {return maxHealth;}
+
+    public int getCurrentHealth() {return currentHealth;}
+
+    public Position getPosition() {return this.position;}
+
+    private int getLevel(int level) {return this.level;}
+
+    // Сеттеры
+    public void setMaxHealth(int health) {
+        this.maxHealth = health;
     }
 
-    public int getDexterity() {
-        return dexterity;
+    public void setHealth(int health) {
+        this.currentHealth = Math.min(health, this.maxHealth);
     }
 
-    public int getMaxHealth() {
-        return maxHealth;
+    public void setStrength(int strength) {
+        this.strength = strength;
     }
 
-    public int getCurrentHealth() {
-        return currentHealth;
+    public void setDexterity(int dexterity) {
+        this.dexterity = dexterity;
     }
 
-    public int getX() {
-        return x;
+    private void setLevel(int level) {this.level = level;}
+
+    public void setPosition(Position position) {this.position = position;}
+
+
+
+
+
+    public int calculateMaxHealth(String type, int level) {
+        switch (type) {
+            case "Zombie":
+                return 40 + level * 2 + (int)(Math.random() * 6 - 3);
+            case "Ogre":
+                return 60 + level * 4 + (int)(Math.random() * 6 - 3);
+            case "SnakeMagician":
+                return 30 + level * 1 + (int)(Math.random() * 6 - 3);
+            case "Vampire":
+                return 35 + level * 3 + (int)(Math.random() * 6 - 3);
+            case "Ghost":
+                return 20 + level * 2 + (int)(Math.random() * 6 - 3);
+            case "Player":
+                return 80;
+            default:
+                return 0;
+        }
+    }
+    public  int calculateDexterity(String type, int level) {
+        switch (type) {
+            case "Zombie":
+                return 5 + level * 1;
+            case "Ogre":
+                return 4 + level * 1;
+            case "SnakeMagician":
+                return 20 + level * 3;
+            case "Vampire":
+                return 10 + level * 2;
+            case "Ghost":
+                return 15 + level * 3;
+            case "Player":
+                return 10;
+            default:
+                return 0;
+        }
+    }
+    public int calculateStrength(String type, int level){
+        switch (type) {
+            case "Zombie":
+                return 12 + level * 2;
+            case "Ogre":
+                return 20 + level * 4;
+            case "SnakeMagician":
+                return 8 + level * 3;
+            case "Vampire":
+                return 10 + level * 3;
+            case "Ghost":
+                return 6 + level * 1;
+            case "Player":
+                return 10;
+            default:
+                return 0;
+        }
     }
 
-    public int getY() {
-        return y;
+    @Override
+    public String toString() {
+        return String.format("%s (%d/%d hp) | Сила: %d | Ловкость: %d",
+                type, currentHealth, maxHealth, strength, dexterity);
     }
 
 
@@ -76,91 +147,34 @@ public abstract class Character {
         return 0.5 + (this.getDexterity() - targetDexterity) * 0.03 + Math.random() * 0.2 - 0.1;
     }
 
-    public int calculateHitDamageWithoutWeapon(int targetDexterity){
+    public int calculateHitDamage(int targetDexterity){
         int base = strength / 3;
         int varianceMax = strength / 5;
         return Math.max(1, (int) (base + Math.random() * (varianceMax + 1)));
     }
 
-    void applySpecialAttackEffects(Character target, boolean targetDied){
+    public void applySpecialAttackEffects(Character target, boolean targetDied){
 
     }
 
 
 
-    public boolean attackWithoutWeapon(Character target) {
+    public boolean attack(Character target) {
         if (!target.isAlive() || !this.isAlive()){
             return false;
         }
         double hitChance = this.calculateHitChance(target.getDexterity());
         if (Math.random() >= hitChance) return false;
 
-        int damage = calculateHitDamageWithoutWeapon(target.getStrength());
+        int damage = calculateHitDamage(target.getStrength());
         boolean targetDied = target.takeDamage(damage);
         applySpecialAttackEffects(target, targetDied);
         return true;
     }
 
-    @Override
-    public String toString() {
-        return String.format("%c (%d/%d hp) | Сила: %d | Ловкость: %d",
-                type, currentHealth, maxHealth, strength, dexterity);
-    }
 
-    public int calculateMaxHealth(char type, int level) {
-        switch (type) {
-            case 'z':
-                return 40 + level * 2 + (int)(Math.random() * 6 - 3);
-            case 'O':
-                return 60 + level * 4 + (int)(Math.random() * 6 - 3);
-            case 's':
-                return 30 + level * 1 + (int)(Math.random() * 6 - 3);
-            case 'v':
-                return 35 + level * 3 + (int)(Math.random() * 6 - 3);
-            case 'g':
-                return 20 + level * 2 + (int)(Math.random() * 6 - 3);
-            case '@':
-                return 80;
-            default:
-                return 0;
-        }
-    }
-    public  int calculateDexterity(char type, int level) {
-        switch (type) {
-            case 'z':
-                return 5 + level * 1;
-            case 'O':
-                return 4 + level * 1;
-            case 's':
-                return 20 + level * 3;
-            case 'v':
-                return 10 + level * 2;
-            case 'g':
-                return 15 + level * 3;
-            case '@':
-                return 10;
-            default:
-                return 0;
-        }
-    }
-    public int calculateStrength(char type, int level){
-        switch (type) {
-            case 'z':
-                return 12 + level * 2;
-            case 'O':
-                return 20 + level * 4;
-            case 's':
-                return 8 + level * 3;
-            case 'v':
-                return 10 + level * 3;
-            case 'g':
-                return 6 + level * 1;
-            case '@':
-                return 10;
-            default:
-                return 0;
-        }
-    }
+
+
 
     public boolean isAlive(){
         return this.currentHealth > 0;
