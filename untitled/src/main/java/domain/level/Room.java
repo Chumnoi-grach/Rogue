@@ -40,6 +40,16 @@ public class Room {
         this.rightCorner = new Position(rightX, rightY);
     }
 
+    public boolean putEntintyToRndPlace(Entity entity) {
+        Position position = getRandomFreePosition();
+        if (position == null) {
+            return false;
+        }
+        entity.setPosition(position);
+        entities.add(entity);
+        return true;
+    }
+
     public Position getRandomFreePosition() {
         if (!isFreePositions) return null;
 
