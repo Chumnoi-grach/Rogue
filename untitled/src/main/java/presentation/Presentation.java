@@ -8,6 +8,7 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
+import com.googlecode.lanterna.terminal.swing.SwingTerminalFrame;
 import domain.level.Level;
 import domain.level.Room;
 
@@ -19,7 +20,8 @@ public class Presentation {
     private final Terminal terminal;
     private final Screen screen;
 
-    private static final TextColor BOUNDCOLOR = TextColor.ANSI.RED_BRIGHT;
+    private static final TextColor COLORBOUND = TextColor.ANSI.YELLOW;
+    private static final TextColor COLORDOOR = TextColor.ANSI.YELLOW_BRIGHT;
     private static final String LEFTTOPBOUND = "╔";
     private static final String LEFTBOTBOUND = "╚";
     private static final String RIGHTTOPBOUND = "╗";
@@ -28,8 +30,8 @@ public class Presentation {
     private static final String HORIZBOUND = "═";
     private static final String HORIZDOOR = "━";
     private static final String VERTDOOR = "┃";
-    private static final String way = "░";
-    private static final String room = ".";
+    private static final String PASSAGE = "░";
+    private static final String ROOMFLOOR = ".";
 /*
 ╔═════╗
 ║     ┃░░░
@@ -37,7 +39,7 @@ public class Presentation {
 ╚══━══╝
    ░
 
- ╔┓┏╦━━╦┓╔┓╔━━╗╔╗ ║┗┛║┗━╣┃║┃║╯╰║║║ ║┏┓║┏ ━ ╣┗ ╣┗╣╰╯║╠╣ ╚┛┗╩━━╩━╩━╩━━╝╚╝
+ ╔┓┏╦━━ ╦ ┓╔┓╔━━╗╔╗ ║┗┛║┗━╣┃║┃║╯╰║║║ ║┏┓║┏ ━ ╣┗ ╣┗╣╰╯║╠ ╣ ╚┛┗╩━━ ╩ ━╩━╩━━╝╚╝
 
  */
 
@@ -46,6 +48,12 @@ public class Presentation {
         factory.setInitialTerminalSize(new TerminalSize(WINDOW_WIDTH, WINDOW_HEIGHT)); // 100x40 символов
         try {
             terminal = factory.createTerminal();
+            // Проверяем, является ли терминал SwingTerminalFrame
+            if (terminal instanceof SwingTerminalFrame) {
+                SwingTerminalFrame swingTerminal = (SwingTerminalFrame) terminal;
+                // Центрируем окно на экране
+                swingTerminal.setLocationRelativeTo(null); // null = относительно центра экрана
+            }
             terminal.enterPrivateMode();
             screen = new TerminalScreen(terminal);
             System.out.println("New Presentation");
@@ -87,29 +95,29 @@ public class Presentation {
 
             // Рисуем верхнюю горизонтальную стену (с углами)
             for (int x = leftX + 1; x < rightX; x++) {
-                putCh(HORIZBOUND.charAt(0), x, leftY, BOUNDCOLOR);
+                putCh(HORIZBOUND.charAt(0), x, leftY, COLORBOUND);
             }
 
             // Рисуем нижнюю горизонтальную стену (с углами)
             for (int x = leftX + 1; x < rightX; x++) {
-                putCh(HORIZBOUND.charAt(0), x, rightY, BOUNDCOLOR);
+                putCh(HORIZBOUND.charAt(0), x, rightY, COLORBOUND);
             }
 
             // Рисуем левую вертикальную стену (с углами)
             for (int y = leftY + 1; y < rightY; y++) {
-                putCh(VERTBOUND.charAt(0), leftX, y, BOUNDCOLOR);
+                putCh(VERTBOUND.charAt(0), leftX, y, COLORBOUND);
             }
 
             // Рисуем правую вертикальную стену (с углами)
             for (int y = leftY + 1; y < rightY; y++) {
-                putCh(VERTBOUND.charAt(0), rightX, y, BOUNDCOLOR);
+                putCh(VERTBOUND.charAt(0), rightX, y, COLORBOUND);
             }
 
             // Рисуем углы
-            putCh(LEFTTOPBOUND.charAt(0), leftX, leftY, BOUNDCOLOR);     // ╔
-            putCh(RIGHTTOPBOUND.charAt(0), rightX, leftY, BOUNDCOLOR);  // ╗
-            putCh(LEFTBOTBOUND.charAt(0), leftX, rightY, BOUNDCOLOR);   // ╚
-            putCh(RIGHTBOTBOUND.charAt(0), rightX, rightY, BOUNDCOLOR); // ╝
+            putCh(LEFTTOPBOUND.charAt(0), leftX, leftY, COLORBOUND);     // ╔
+            putCh(RIGHTTOPBOUND.charAt(0), rightX, leftY, COLORBOUND);  // ╗
+            putCh(LEFTBOTBOUND.charAt(0), leftX, rightY, COLORBOUND);   // ╚
+            putCh(RIGHTBOTBOUND.charAt(0), rightX, rightY, COLORBOUND); // ╝
 
             // Заготовка для рисования дверей
             // TODO: после добавления координат дверей в Room
