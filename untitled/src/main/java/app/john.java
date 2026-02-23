@@ -13,6 +13,7 @@ import domain.items.Scroll;
 //import domain.Player;
 import domain.Position;
 import domain.items.Scroll;
+import domain.level.RoomGraph;
 import presentation.Presentation;
 
 import static com.googlecode.lanterna.input.KeyType.Enter;
@@ -20,40 +21,56 @@ import static com.googlecode.lanterna.input.KeyType.Enter;
 
 public class john {
     public static void main(String[] args) throws Exception {
-        Presentation presentation = new Presentation();
-        presentation.start();
+        RoomGraph graph = new RoomGraph();
 
-        Game currentGame = new Game();
-        boolean isRunning = true;
+        System.out.println("Source full grid:");
+        graph.printGraph();
 
-        while (isRunning) {
-            presentation.printLevel(currentGame.getCurrentLevel());
-            presentation.refresh();
+        // Удаляем несколько ребер
+        System.out.println("Remove 3 random edges:");
+        graph.removeRandomEdges(4);
 
-            KeyStroke keyStroke = presentation.getScreen().readInput();
+        graph.printGraph();
+        graph.printMatrix();
 
-            if (keyStroke != null) {
-                KeyType keyType = keyStroke.getKeyType();
+        // Проверим связность финального графа
+        System.out.println("Graph is connected? " + graph.isConnected());
 
-                switch (keyType) {
-                    case Escape:
-                        System.out.println("Выход из программы");
-                        isRunning = false; // выход из цикла
-                        break;
 
-//                    case 'a':
-//                        //currentGame.moveLeft();
+//        Presentation presentation = new Presentation();
+//        presentation.start();
+//
+//        Game currentGame = new Game();
+//        boolean isRunning = true;
+//
+//        while (isRunning) {
+//            presentation.printLevel(currentGame.getCurrentLevel());
+//            presentation.refresh();
+//
+//            KeyStroke keyStroke = presentation.getScreen().readInput();
+//
+//            if (keyStroke != null) {
+//                KeyType keyType = keyStroke.getKeyType();
+//
+//                switch (keyType) {
+//                    case Escape:
+//                        System.out.println("Выход из программы");
+//                        isRunning = false; // выход из цикла
 //                        break;
-
-                    default:
-                        System.out.println("Генерируем новый уровень");
-                        currentGame.generateLevel(1);
-                        break;
-                }
-            }
-        }
-
-        presentation.end(); // закрываем presentation после цикла
+//
+////                    case 'a':
+////                        //currentGame.moveLeft();
+////                        break;
+//
+//                    default:
+//                        System.out.println("Генерируем новый уровень");
+//                        currentGame.generateLevel(1);
+//                        break;
+//                }
+//            }
+//        }
+//
+//        presentation.end(); // закрываем presentation после цикла
     }
 }
 
