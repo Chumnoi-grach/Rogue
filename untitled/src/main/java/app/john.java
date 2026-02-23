@@ -10,13 +10,13 @@ import com.googlecode.lanterna.input.KeyType;
 import domain.*;
 import domain.items.Scroll;
 
-import domain.Player;
+//import domain.Player;
 import domain.Position;
 import domain.items.Scroll;
 import presentation.Presentation;
 
 import static com.googlecode.lanterna.input.KeyType.Enter;
-import static domain.items.ScrollType.HEALTH;
+
 
 public class john {
     public static void main(String[] args) throws Exception {

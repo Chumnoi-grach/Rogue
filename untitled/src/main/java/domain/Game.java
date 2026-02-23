@@ -2,6 +2,7 @@ package domain;
 
 import domain.level.Generation;
 import domain.level.Level;
+import domain.player.Player;
 
 public class Game {
     private Level currentLevel;
