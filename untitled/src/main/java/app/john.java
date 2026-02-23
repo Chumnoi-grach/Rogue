@@ -41,6 +41,10 @@ public class john {
                         isRunning = false; // выход из цикла
                         break;
 
+                    case 'a':
+                        //currentGame.moveLeft();
+                        break;
+
                     default:
                         System.out.println("Генерируем новый уровень");
                         currentGame.generateLevel(1);

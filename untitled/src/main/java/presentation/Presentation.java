@@ -84,6 +84,11 @@ public class Presentation {
     public void printLevel(Level currentLevel) throws IOException {
         clear();
         printRooms(currentLevel);
+        // ПЕЧАТЬ ДВЕРЕЙ
+        // ПЕЧЕТЬ КОРИДОРОВ
+        // ПЕЧАТЬ СУЩНОСТЕЙ
+        // ИГРОКА
+        // ВЫВОД СТРОК
     }
 
     private void printRooms(Level currentLevel) throws IOException {

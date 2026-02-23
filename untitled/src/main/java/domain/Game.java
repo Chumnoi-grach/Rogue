@@ -27,4 +27,9 @@ public class Game {
     public Level getCurrentLevel() {
         return currentLevel;
     }
+
+    public void moveLeft() {
+        //проверка на возможность сдвига
+        //player.getPosition().getX()
+    }
 }

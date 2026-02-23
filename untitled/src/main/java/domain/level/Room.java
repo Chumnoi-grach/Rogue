@@ -15,8 +15,8 @@ public class Room {
     private List<Entity> entities = new ArrayList<>();
 
     // минимальные размеры комнаты
-    private static final int minRoomWidth = 6;
-    private static final int minRoomHeight = 4;
+    private static final int minRoomWidth = 8;
+    private static final int minRoomHeight = 6;
 
     // Конструктор случайно генерирует оба угла комнаты в заданном квадрате
     public Room(Position roomBoundsMin, Position roomBoundsMax) {
