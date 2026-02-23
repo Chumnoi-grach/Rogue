@@ -48,35 +48,6 @@ public class Backpack {
         return list.add(item);
     }
 
-//    private boolean addWeapon(Weapon weapon) {
-//        if (weapons.size() >= MAX_ITEMS_PER_TYPE) {
-//            return false;
-//        }
-//        return weapons.add(weapon);
-//    }
-//
-//    private boolean addPotion(Potion potion) {
-//        if (potions.size() >= MAX_ITEMS_PER_TYPE) {
-//            return false;
-//        }
-//        return potions.add(potion);
-//    }
-//
-//    private boolean addScroll(Scroll scroll) {
-//        if (scrolls.size() >= MAX_ITEMS_PER_TYPE) {
-//            return false;
-//        }
-//        return scrolls.add(scroll);
-//    }
-//
-//    private boolean addFood(Food food) {
-//        if (foods.size() >= MAX_ITEMS_PER_TYPE) {
-//            return false;
-//        }
-//        return foods.add(food);
-//    }
-
-
     public Optional<Backpackable> useItem(ItemType type, int slotIndex, Player player) {
         if (slotIndex < 0 || slotIndex >= MAX_ITEMS_PER_TYPE) {
             return Optional.empty();
@@ -95,7 +66,7 @@ public class Backpack {
         return Optional.of(item);
     }
 
-    private List<Backpackable> getListByType(ItemType type) {
+    public List<Backpackable> getListByType(ItemType type) {
         switch (type) {
             case WEAPON: return weapons;
             case POTION: return potions;
