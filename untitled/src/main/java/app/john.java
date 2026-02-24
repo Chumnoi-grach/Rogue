@@ -51,9 +51,21 @@ public class john {
                         isRunning = false; // выход из цикла
                         break;
 
-//                    case 'a':
-//                        //currentGame.moveLeft();
-//                        break;
+                    case ArrowLeft:
+                        currentGame.moveLeft();
+                        break;
+
+                    case ArrowRight:
+                        currentGame.moveRight();
+                        break;
+
+                    case ArrowUp:
+                        currentGame.moveUp();
+                        break;
+
+                    case ArrowDown:
+                        currentGame.moveDown();
+                        break;
 
                     default:
                         System.out.println("Генерируем новый уровень");

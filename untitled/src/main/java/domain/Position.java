@@ -25,6 +25,10 @@ public class Position {
         return Math.sqrt(dx*dx + dy*dy);
     }
 
+    public boolean equal(Position position) {
+        return x == position.getX() && y == position.getY();
+    }
+
     @Override
     public String toString() {
         return "(" + x + ", " + y + ")";

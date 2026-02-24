@@ -143,11 +143,19 @@ public class Room {
     }
 
     //Проверить что позиция внутри комнаты
-    private boolean isPositionInRoom(Position position) {
+    public boolean isPositionInRoom(Position position) {
         return position.getX() > leftCorner.getX() &&
                 position.getX() < rightCorner.getX() &&
                 position.getY() > leftCorner.getY() &&
                 position.getY() < rightCorner.getY();
+    }
+
+    public boolean isPositionInDoor(Position position) {
+        for (Door door : doors) {
+            if (door != null && door.getPosition().equal(position))
+                return true;
+        }
+        return false;
     }
 
     //Проверить что позиция не занята
