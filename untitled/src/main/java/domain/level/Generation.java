@@ -1,9 +1,9 @@
 package domain.level;
 
 import domain.Position;
+import domain.player.Player;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 /*
 Класс для генерации уровня
 -Комнаты
@@ -67,10 +67,75 @@ public class Generation {
 //        Level level = new Level(levelNumber, rooms, corridors);
         Level level = new Level(levelNumber, rooms, corridors);
 
+        //Определить стартовую и конечные комнаты.
+        //В стартовой нет никаких сущностей. Ни монстров, ни предметов
+        Random rnd = new Random();
+        int startRoom = rnd.nextInt(0, ROOM_COUNT);
+        int endRoom = getRoomAtDistance(startRoom, roomGraph.getConnections());
+        level.setStartRoom(startRoom);
+        level.setEndRoom(endRoom);
+        level.setStairsDown(level.getRoom(endRoom).getRandomFreePosition());
+
+
         // 4. Размещаем сущности
         //populateLevel(level, levelNumber);
 
         return level;
+    }
+
+    public int getRoomAtDistance(int startRoom, boolean[][] connections) {
+        int n = connections.length;
+        int[] dist = new int[n];
+        Arrays.fill(dist, -1);
+        dist[startRoom] = 0;
+
+        Queue<Integer> q = new LinkedList<>();
+        q.add(startRoom);
+
+        while (!q.isEmpty()) {
+            int curr = q.poll();
+            for (int next = 0; next < n; next++) {
+                if (connections[curr][next] && dist[next] == -1) {
+                    dist[next] = dist[curr] + 1;
+                    q.add(next);
+                }
+            }
+        }
+
+        // Собираем комнаты с расстоянием 2 и больше
+        List<Integer> farRooms = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (dist[i] >= 2) {
+                farRooms.add(i);
+            }
+        }
+        // Если не нашлось комнаты на удалении в 2 шага
+
+        return farRooms.isEmpty() ? -1 :
+                farRooms.get(new Random().nextInt(farRooms.size()));
+
+//        // Создаем список комнат с их расстояниями
+//        List<RoomDistance> roomDistances = new ArrayList<>();
+//        for (int room = 0; room < n; room++) {
+//            if (room != startRoom && dist[room] != -1) {
+//                roomDistances.add(new RoomDistance(room, dist[room]));
+//            }
+//        }
+
+//        // Сортируем по убыванию расстояния
+//        Collections.sort(roomDistances, (a, b) -> b.distance - a.distance);
+
+    }
+
+    // Вспомогательный класс для хранения пары комната-расстояние
+    private static class RoomDistance {
+        int room;
+        int distance;
+
+        RoomDistance(int room, int distance) {
+            this.room = room;
+            this.distance = distance;
+        }
     }
 
     private List<Corridor> genCorridors(Room[] rooms) {

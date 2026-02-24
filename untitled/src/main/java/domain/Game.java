@@ -10,23 +10,26 @@ public class Game {
     private Generation generator = new Generation();
 
     public Game() {
-        this.player = new Player("John", new Position(5, 5)); // стартовая позиция
-
+        // Создаем игрока
+        this.player = new Player("John", new Position(0,0));
         // генерируем первый уровень
         generateLevel(1);
-
-        // размещаем игрока
-        currentLevel.getRoom(0).putEntintyToRndPlace(player);
 
     }
 
 
     public void generateLevel(int levelNumber) {
         this.currentLevel = generator.generateLevel(levelNumber);
+        //После генерации уровня помещаем игрока в стартовую комнату
+        player.setPosition(currentLevel.getRoom(currentLevel.getStartRoom()).getRandomFreePosition());
     }
 
     public Level getCurrentLevel() {
         return currentLevel;
+    }
+
+    public Player getPlayer() {
+        return  player;
     }
 
     public void moveLeft() {

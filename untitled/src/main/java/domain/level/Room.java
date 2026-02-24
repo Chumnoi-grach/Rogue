@@ -93,6 +93,7 @@ public class Room {
         if (position == null) {
             return false;
         }
+        System.out.printf("rnd pos: %d %d", position.getX(), position.getY());
         entity.setPosition(position);
         entities.add(entity);
         return true;
@@ -135,6 +136,7 @@ public class Room {
         return rightCorner;
     }
 
+    //Случайное число от и до включительно
     public static int rndBetween(int min, int max) {
         Random rnd = new Random();
         return rnd.nextInt(min, max + 1);

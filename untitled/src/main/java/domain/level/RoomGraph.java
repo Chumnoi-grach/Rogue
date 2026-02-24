@@ -147,7 +147,10 @@ public class RoomGraph {
         return doors;
     }
 
-
+    //Получить матрицу смежности
+    public boolean[][] getConnections() {
+        return connections;
+    }
 
     // Визуализация графа
     public void printGraph() {

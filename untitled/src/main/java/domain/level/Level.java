@@ -13,12 +13,15 @@ public class Level {
     private final Room[] rooms;
     private final List<Corridor> corridors;
     //private final Map<Position, Entity> entities; // позиция -> сущность
+    private int startRoom;
+    private int endRoom;
     private Position stairsDown; // лестница вниз
 
     public Level(int levelNumber, Room[] rooms, List<Corridor> corridors /*, List<Corridor> corridors */) {
         this.levelNumber = levelNumber;
         this.rooms = rooms;
-        this.corridors = corridors;// коридоры - список одномерных палок. С координатами начала и конца
+        this.corridors = corridors; // коридоры - список одномерных палок. С координатами начала и конца
+
         //this.entities = new HashMap<>();
     }
 
@@ -32,6 +35,34 @@ public class Level {
 
     public List<Corridor> getCorridors() {
         return corridors;
+    }
+
+    public int getLevelNumber() {
+        return levelNumber;
+    }
+
+    public void setStartRoom(int startRoom) {
+        this.startRoom = startRoom;
+    }
+
+    public int getStartRoom() {
+        return startRoom;
+    }
+
+    public void setEndRoom(int endRoom) {
+        this.endRoom = endRoom;
+    }
+
+    public int getEndRoom() {
+        return endRoom;
+    }
+
+    public void setStairsDown(Position stairsDown) {
+        this.stairsDown = stairsDown;
+    }
+
+    public Position getStairsDown() {
+        return stairsDown;
     }
 
     //    private static final int[][] ROOM_COORDS = {

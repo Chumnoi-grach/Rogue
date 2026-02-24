@@ -36,7 +36,8 @@ public class john {
         boolean isRunning = true;
 
         while (isRunning) {
-            presentation.printLevel(currentGame.getCurrentLevel());
+            presentation.displayGame(currentGame);
+
             presentation.refresh();
 
             KeyStroke keyStroke = presentation.getScreen().readInput();
