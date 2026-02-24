@@ -10,6 +10,7 @@ public class RoomGraph {
     public RoomGraph() {
         connections = new boolean[ROOMS][ROOMS];
         createFullGrid();
+        removeRandomEdges(Room.rndBetween(2,4));
     }
 
     // Создает полную сетку (все соседи соединены)
@@ -125,6 +126,31 @@ public class RoomGraph {
             room2 = r2;
         }
     }
+
+    public boolean[] getRoomDoors(int roomNum) {
+        //массив направления дверей
+        //0 - север, 1 - восток, 2 - юг, 3 - запад
+        boolean[] doors = new boolean[4]; // по умолчанию все false
+
+        int row = roomNum / SIZE;
+        int col = roomNum % SIZE;
+
+        // Север (0)
+        if (row > 0) doors[0] = connections[roomNum][roomNum - SIZE];
+
+        // Восток (1)
+        if (col < SIZE - 1) doors[1] = connections[roomNum][roomNum + 1];
+
+        // Юг (2)
+        if (row < SIZE - 1) doors[2] = connections[roomNum][roomNum + SIZE];
+
+        // Запад (3)
+        if (col > 0) doors[3] = connections[roomNum][roomNum - 1];
+
+        return doors;
+    }
+
+
 
     // Визуализация графа
     public void printGraph() {

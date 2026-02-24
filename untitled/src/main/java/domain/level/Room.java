@@ -7,8 +7,10 @@ import java.util.*;
 
 // Конструктор комнаты возвращает объект со случайным размером комнаты в заданном диапазоне координат углов
 public class Room {
+    private final int MAX_DOORS = 4;
     private final Position leftCorner;
     private final Position rightCorner;
+    private final Door[] doors = new Door[MAX_DOORS];
     private boolean isFreePositions;
 
     //Координаты сущностей в комнате.
@@ -38,6 +40,36 @@ public class Room {
         this.isFreePositions = true;
         this.leftCorner = new Position(leftX, leftY);
         this.rightCorner = new Position(rightX, rightY);
+    }
+
+    //принимает boolean массив с направлениями дверей
+    public void genDoors(boolean[] doorDirection) {
+        // Вычисляем длины сторон для размещения дверей
+        int minX = leftCorner.getX() + 1;
+        int maxX = rightCorner.getX() - 1;
+        int minY = leftCorner.getY() + 1;
+        int maxY = rightCorner.getY() - 1;
+
+        // северная стена
+        if (doorDirection[0]) {
+            doors[0] = new Door( new Position(rndBetween(minX, maxX), leftCorner.getY()));
+        }
+        // восточная стена
+        if (doorDirection[1]) {
+            doors[1] = new Door( new Position(rightCorner.getX(), rndBetween(minY, maxY)));
+        }
+        // Южная стена
+        if (doorDirection[2]) {
+            doors[2] = new Door( new Position(rndBetween(minX, maxX), rightCorner.getY()));
+        }
+        // Западная стена
+        if (doorDirection[3]) {
+            doors[3] = new Door( new Position(leftCorner.getX(), rndBetween(minY, maxY)));
+        }
+    }
+
+    public Door[] getDoors() {
+        return doors;
     }
 
     public boolean putEntintyToRndPlace(Entity entity) {

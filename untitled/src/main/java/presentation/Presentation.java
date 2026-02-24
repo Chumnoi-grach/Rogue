@@ -8,13 +8,18 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
+import com.googlecode.lanterna.terminal.swing.SwingTerminalFontConfiguration;
 import com.googlecode.lanterna.terminal.swing.SwingTerminalFrame;
+import domain.level.Door;
 import domain.level.Level;
 import domain.level.Room;
 
+import java.awt.*;
 import java.io.IOException;
 
 public class Presentation {
+    private static final int ROOM_COUNT = 9;
+    private static final int MAX_DOORS_IN_ROOM = 4;
     private static final int WINDOW_WIDTH = 100;
     private static final int WINDOW_HEIGHT = 40;
     private final Terminal terminal;
@@ -48,6 +53,13 @@ public class Presentation {
     public Presentation() throws IOException {
         DefaultTerminalFactory factory = new DefaultTerminalFactory();
         factory.setInitialTerminalSize(new TerminalSize(WINDOW_WIDTH, WINDOW_HEIGHT)); // 100x40 символов
+
+        // НАСТРОЙКА ШРИФТА - добавляем перед createTerminal()
+        Font font = new Font("Monospaced", Font.BOLD, 18); // жирный, размер 24
+        SwingTerminalFontConfiguration fontConfig =
+                SwingTerminalFontConfiguration.newInstance(font);
+        factory.setTerminalEmulatorFontConfiguration(fontConfig);
+
         try {
             terminal = factory.createTerminal();
             // Проверяем, является ли терминал SwingTerminalFrame
@@ -84,6 +96,7 @@ public class Presentation {
     public void printLevel(Level currentLevel) throws IOException {
         clear();
         printRooms(currentLevel);
+        printDoors(currentLevel);
         // ПЕЧАТЬ ДВЕРЕЙ
         // ПЕЧЕТЬ КОРИДОРОВ
         // ПЕЧАТЬ СУЩНОСТЕЙ
@@ -91,8 +104,27 @@ public class Presentation {
         // ВЫВОД СТРОК
     }
 
+    private void printDoors(Level currentLevel) throws IOException {
+        for (int i = 0; i < ROOM_COUNT; i++) {
+            Door[] doors = currentLevel.getRoom(i).getDoors();
+
+            if(doors[0] != null) {
+                putCh(HORIZDOOR.charAt(0), doors[0].getPosition().getX(), doors[0].getPosition().getY(), COLORDOOR);
+            }
+            if(doors[1] != null) {
+                putCh(VERTDOOR.charAt(0), doors[1].getPosition().getX(), doors[1].getPosition().getY(), COLORDOOR);
+            }
+            if(doors[2] != null) {
+                putCh(HORIZDOOR.charAt(0), doors[2].getPosition().getX(), doors[2].getPosition().getY(), COLORDOOR);
+            }
+            if(doors[3] != null) {
+                putCh(VERTDOOR.charAt(0), doors[3].getPosition().getX(), doors[3].getPosition().getY(), COLORDOOR);
+            }
+        }
+    }
+
     private void printRooms(Level currentLevel) throws IOException {
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < ROOM_COUNT; i++) {
             Room room = currentLevel.getRoom(i);
 
             int leftX = room.getLeftCorner().getX();

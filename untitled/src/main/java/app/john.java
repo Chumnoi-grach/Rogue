@@ -21,56 +21,48 @@ import static com.googlecode.lanterna.input.KeyType.Enter;
 
 public class john {
     public static void main(String[] args) throws Exception {
-        RoomGraph graph = new RoomGraph();
-
-        System.out.println("Source full grid:");
-        graph.printGraph();
-
-        // Удаляем несколько ребер
-        System.out.println("Remove 3 random edges:");
-        graph.removeRandomEdges(4);
-
-        graph.printGraph();
-        graph.printMatrix();
-
-        // Проверим связность финального графа
-        System.out.println("Graph is connected? " + graph.isConnected());
+//        RoomGraph graph = new RoomGraph();
+//        System.out.println("Source full grid:");
+//        graph.printGraph();
+//        graph.printMatrix();
+//        // Проверим связность финального графа
+//        System.out.println("Graph is connected? " + graph.isConnected());
 
 
-//        Presentation presentation = new Presentation();
-//        presentation.start();
-//
-//        Game currentGame = new Game();
-//        boolean isRunning = true;
-//
-//        while (isRunning) {
-//            presentation.printLevel(currentGame.getCurrentLevel());
-//            presentation.refresh();
-//
-//            KeyStroke keyStroke = presentation.getScreen().readInput();
-//
-//            if (keyStroke != null) {
-//                KeyType keyType = keyStroke.getKeyType();
-//
-//                switch (keyType) {
-//                    case Escape:
-//                        System.out.println("Выход из программы");
-//                        isRunning = false; // выход из цикла
+        Presentation presentation = new Presentation();
+        presentation.start();
+
+        Game currentGame = new Game();
+        boolean isRunning = true;
+
+        while (isRunning) {
+            presentation.printLevel(currentGame.getCurrentLevel());
+            presentation.refresh();
+
+            KeyStroke keyStroke = presentation.getScreen().readInput();
+
+            if (keyStroke != null) {
+                KeyType keyType = keyStroke.getKeyType();
+
+                switch (keyType) {
+                    case Escape:
+                        System.out.println("Выход из программы");
+                        isRunning = false; // выход из цикла
+                        break;
+
+//                    case 'a':
+//                        //currentGame.moveLeft();
 //                        break;
-//
-////                    case 'a':
-////                        //currentGame.moveLeft();
-////                        break;
-//
-//                    default:
-//                        System.out.println("Генерируем новый уровень");
-//                        currentGame.generateLevel(1);
-//                        break;
-//                }
-//            }
-//        }
-//
-//        presentation.end(); // закрываем presentation после цикла
+
+                    default:
+                        System.out.println("Генерируем новый уровень");
+                        currentGame.generateLevel(1);
+                        break;
+                }
+            }
+        }
+
+        presentation.end(); // закрываем presentation после цикла
     }
 }
 

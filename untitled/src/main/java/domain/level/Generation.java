@@ -4,10 +4,20 @@ import domain.Position;
 
 import java.util.ArrayList;
 import java.util.List;
+/*
+Класс для генерации уровня
+-Комнаты
+-Двери
+-Коридоры
+-Предметы
+-Монстры
+ */
 
 public class Generation {
     private static final int WINDOW_WIDTH = 100;
     private static final int WINDOW_HEIGHT = 40;
+    private static final int ROOM_COUNT = 9;
+
 
     // Отступы для текста сверху и снизу
     private static final int TEXT_TOP_OFFSET = 1;
@@ -39,7 +49,18 @@ public class Generation {
 
     public Level generateLevel(int levelNumber){
         // 1. Создаем комнаты
-        List<Room> rooms = generateRooms();
+        Room[] rooms = generateRooms();
+
+        //Создаем связный граф
+        RoomGraph roomGraph = new RoomGraph();
+
+        roomGraph.printGraph();
+
+        // 2. создаем двери в комнатах на основе таблицы связности графа
+        for (int i = 0; i < ROOM_COUNT; i++) {
+            rooms[i].genDoors(roomGraph.getRoomDoors(i));
+        }
+
 
         // 2. Создаем коридоры между комнатами
         //List<Corridor> corridors = generateCorridors(rooms);
@@ -54,12 +75,12 @@ public class Generation {
         return level;
     }
 
-    public ArrayList<Room> generateRooms() {
-        ArrayList<Room> rooms = new ArrayList<>(9);
-        for (int i = 0; i < 9; i++) {
+    public Room[] generateRooms() {
+        Room[] rooms = new Room[ROOM_COUNT];
+        for (int i = 0; i < ROOM_COUNT; i++) {
             Position min = new Position(roomCoords[i][0], roomCoords[i][1]);
             Position max = new Position(roomCoords[i][2], roomCoords[i][3]);
-            rooms.add(new Room(min, max));
+            rooms[i] = new Room(min, max);
         }
         return rooms;
     }

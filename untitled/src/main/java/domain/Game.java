@@ -7,10 +7,9 @@ import domain.player.Player;
 public class Game {
     private Level currentLevel;
     private Player player;
-    private Generation generator;
+    private Generation generator = new Generation();
 
     public Game() {
-        this.generator = new Generation();
         this.player = new Player("John", new Position(5, 5)); // стартовая позиция
 
         // генерируем первый уровень
@@ -20,6 +19,7 @@ public class Game {
         currentLevel.getRoom(0).putEntintyToRndPlace(player);
 
     }
+
 
     public void generateLevel(int levelNumber) {
         this.currentLevel = generator.generateLevel(levelNumber);
