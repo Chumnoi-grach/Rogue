@@ -7,16 +7,18 @@ import java.util.*;
 
 // Конструктор комнаты возвращает объект со случайным размером комнаты в заданном диапазоне координат углов
 public class Room {
+    private final int MAX_DOORS = 4;
     private final Position leftCorner;
     private final Position rightCorner;
+    private final Door[] doors = new Door[MAX_DOORS];
     private boolean isFreePositions;
 
     //Координаты сущностей в комнате.
     private List<Entity> entities = new ArrayList<>();
 
     // минимальные размеры комнаты
-    private static final int minRoomWidth = 6;
-    private static final int minRoomHeight = 4;
+    private static final int minRoomWidth = 8;
+    private static final int minRoomHeight = 6;
 
     // Конструктор случайно генерирует оба угла комнаты в заданном квадрате
     public Room(Position roomBoundsMin, Position roomBoundsMax) {
@@ -38,6 +40,63 @@ public class Room {
         this.isFreePositions = true;
         this.leftCorner = new Position(leftX, leftY);
         this.rightCorner = new Position(rightX, rightY);
+    }
+
+    //принимает boolean массив с направлениями дверей
+    public void genDoors(boolean[] doorDirection) {
+        // Вычисляем длины сторон для размещения дверей
+        int minX = leftCorner.getX() + 1;
+        int maxX = rightCorner.getX() - 1;
+        int minY = leftCorner.getY() + 1;
+        int maxY = rightCorner.getY() - 1;
+
+        // северная стена
+        if (doorDirection[0]) {
+            doors[0] = new Door( new Position(rndBetween(minX, maxX), leftCorner.getY()));
+        }
+        // восточная стена
+        if (doorDirection[1]) {
+            doors[1] = new Door( new Position(rightCorner.getX(), rndBetween(minY, maxY)));
+        }
+        // Южная стена
+        if (doorDirection[2]) {
+            doors[2] = new Door( new Position(rndBetween(minX, maxX), rightCorner.getY()));
+        }
+        // Западная стена
+        if (doorDirection[3]) {
+            doors[3] = new Door( new Position(leftCorner.getX(), rndBetween(minY, maxY)));
+        }
+    }
+
+    public Door[] getDoors() {
+        return doors;
+    }
+
+    public Door getUpperDoor() {
+        return doors[0];
+    }
+
+    public Door getRigthDoor() {
+        return doors[1];
+    }
+
+    public Door getBottomDoor() {
+        return doors[2];
+    }
+
+    public Door getLeftDoor() {
+        return doors[3];
+    }
+
+    public boolean putEntintyToRndPlace(Entity entity) {
+        Position position = getRandomFreePosition();
+        if (position == null) {
+            return false;
+        }
+        System.out.printf("rnd pos: %d %d", position.getX(), position.getY());
+        entity.setPosition(position);
+        entities.add(entity);
+        return true;
     }
 
     public Position getRandomFreePosition() {
@@ -77,6 +136,7 @@ public class Room {
         return rightCorner;
     }
 
+    //Случайное число от и до включительно
     public static int rndBetween(int min, int max) {
         Random rnd = new Random();
         return rnd.nextInt(min, max + 1);
