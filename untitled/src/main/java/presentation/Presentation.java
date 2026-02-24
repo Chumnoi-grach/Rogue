@@ -10,12 +10,15 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.terminal.swing.SwingTerminalFontConfiguration;
 import com.googlecode.lanterna.terminal.swing.SwingTerminalFrame;
+import domain.Position;
+import domain.level.Corridor;
 import domain.level.Door;
 import domain.level.Level;
 import domain.level.Room;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.List;
 
 public class Presentation {
     private static final int ROOM_COUNT = 9;
@@ -27,6 +30,7 @@ public class Presentation {
 
     private static final TextColor COLORBOUND = TextColor.ANSI.YELLOW;
     private static final TextColor COLORDOOR = TextColor.ANSI.YELLOW_BRIGHT;
+    private static final TextColor COLOPASSAGE = TextColor.Factory.fromString("#555555");
     private static final String LEFTTOPBOUND = "╔";
     private static final String LEFTBOTBOUND = "╚";
     private static final String RIGHTTOPBOUND = "╗";
@@ -97,28 +101,62 @@ public class Presentation {
         clear();
         printRooms(currentLevel);
         printDoors(currentLevel);
-        // ПЕЧАТЬ ДВЕРЕЙ
+        printCorridors(currentLevel);
         // ПЕЧЕТЬ КОРИДОРОВ
         // ПЕЧАТЬ СУЩНОСТЕЙ
         // ИГРОКА
         // ВЫВОД СТРОК
     }
 
+    private void printCorridors(Level currentLevel) throws IOException {
+        List<Corridor> corridors = currentLevel.getCorridors();
+        for (int i = 0; i < corridors.size(); i++) {
+            Corridor corridor = corridors.get(i);
+            int x1 = corridor.getLeftCorner().getX();
+            int y1 = corridor.getLeftCorner().getY();
+            int x2 = corridor.getRightCorner().getX();
+            int y2 = corridor.getRightCorner().getY();
+
+            // нормализация, чтобы x1 <= x2 и y1 <= y2
+            if (x1 > x2) { int t = x1; x1 = x2; x2 = t; }
+            if (y1 > y2) { int t = y1; y1 = y2; y2 = t; }
+
+            // рисуем включительно по x2 и y2
+            for (int x = x1; x <= x2; x++) {
+                for (int y = y1; y <= y2; y++) {
+                    putCh(PASSAGE.charAt(0), x, y, COLOPASSAGE);
+                }
+            }
+        }
+    }
+
     private void printDoors(Level currentLevel) throws IOException {
         for (int i = 0; i < ROOM_COUNT; i++) {
             Door[] doors = currentLevel.getRoom(i).getDoors();
 
-            if(doors[0] != null) {
-                putCh(HORIZDOOR.charAt(0), doors[0].getPosition().getX(), doors[0].getPosition().getY(), COLORDOOR);
+            if(currentLevel.getRoom(i).getUpperDoor() != null) {
+                putCh(HORIZDOOR.charAt(0),
+                        currentLevel.getRoom(i).getUpperDoor().getPosition().getX(),
+                        currentLevel.getRoom(i).getUpperDoor().getPosition().getY(),
+                        COLORDOOR);
             }
             if(doors[1] != null) {
-                putCh(VERTDOOR.charAt(0), doors[1].getPosition().getX(), doors[1].getPosition().getY(), COLORDOOR);
+                putCh(VERTDOOR.charAt(0),
+                        currentLevel.getRoom(i).getRigthDoor().getPosition().getX(),
+                        currentLevel.getRoom(i).getRigthDoor().getPosition().getY(),
+                        COLORDOOR);
             }
             if(doors[2] != null) {
-                putCh(HORIZDOOR.charAt(0), doors[2].getPosition().getX(), doors[2].getPosition().getY(), COLORDOOR);
+                putCh(HORIZDOOR.charAt(0),
+                        currentLevel.getRoom(i).getBottomDoor().getPosition().getX(),
+                        currentLevel.getRoom(i).getBottomDoor().getPosition().getY(),
+                        COLORDOOR);
             }
             if(doors[3] != null) {
-                putCh(VERTDOOR.charAt(0), doors[3].getPosition().getX(), doors[3].getPosition().getY(), COLORDOOR);
+                putCh(VERTDOOR.charAt(0),
+                        currentLevel.getRoom(i).getLeftDoor().getPosition().getX(),
+                        currentLevel.getRoom(i).getLeftDoor().getPosition().getY(),
+                        COLORDOOR);
             }
         }
     }

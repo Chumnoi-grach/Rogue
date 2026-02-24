@@ -11,14 +11,14 @@ import java.util.Map;
 public class Level {
     private final int levelNumber;
     private final Room[] rooms;
-    //private final List<Corridor> corridors;
+    private final List<Corridor> corridors;
     //private final Map<Position, Entity> entities; // позиция -> сущность
     private Position stairsDown; // лестница вниз
 
-    public Level(int levelNumber, Room[] rooms /*, List<Corridor> corridors */) {
+    public Level(int levelNumber, Room[] rooms, List<Corridor> corridors /*, List<Corridor> corridors */) {
         this.levelNumber = levelNumber;
         this.rooms = rooms;
-        //this.corridors = corridors;// коридоры - список одномерных палок. С координатами начала и конца
+        this.corridors = corridors;// коридоры - список одномерных палок. С координатами начала и конца
         //this.entities = new HashMap<>();
     }
 
@@ -28,6 +28,10 @@ public class Level {
 
     public Room getRoom(int roomNumber) {
         return rooms[roomNumber];
+    }
+
+    public List<Corridor> getCorridors() {
+        return corridors;
     }
 
     //    private static final int[][] ROOM_COORDS = {

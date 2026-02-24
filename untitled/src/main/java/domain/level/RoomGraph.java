@@ -93,7 +93,6 @@ public class RoomGraph {
 
             // Проверяем связность
             if (isConnected()) {
-                System.out.println("Remove edge between " + edge.room1 + " and " + edge.room2);
                 return true; // успешно удалили
             } else {
                 // Возвращаем ребро обратно
@@ -101,8 +100,6 @@ public class RoomGraph {
                 connections[edge.room2][edge.room1] = wasConnected;
             }
         }
-
-        System.out.println("Not found edge to delete");
         return false; // не нашли подходящего ребра
     }
 

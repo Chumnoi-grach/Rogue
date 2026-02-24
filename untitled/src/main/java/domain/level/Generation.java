@@ -53,27 +53,85 @@ public class Generation {
 
         //Создаем связный граф
         RoomGraph roomGraph = new RoomGraph();
-
-        roomGraph.printGraph();
+        //roomGraph.printGraph();
 
         // 2. создаем двери в комнатах на основе таблицы связности графа
         for (int i = 0; i < ROOM_COUNT; i++) {
             rooms[i].genDoors(roomGraph.getRoomDoors(i));
         }
 
-
         // 2. Создаем коридоры между комнатами
-        //List<Corridor> corridors = generateCorridors(rooms);
+        List<Corridor> corridors = genCorridors(rooms);
 
         // 3. Создаем уровень
 //        Level level = new Level(levelNumber, rooms, corridors);
-        Level level = new Level(levelNumber, rooms);
+        Level level = new Level(levelNumber, rooms, corridors);
 
         // 4. Размещаем сущности
         //populateLevel(level, levelNumber);
 
         return level;
     }
+
+    private List<Corridor> genCorridors(Room[] rooms) {
+        List<Corridor> corridors = new ArrayList<>();
+        //Создаем горизонтальные коридоры. Слева направо
+        for (int i = 0; i < ROOM_COUNT - 1; i++) {
+           if (rooms[i].getRigthDoor() != null) {//восточная стена с дверью.
+               //Значит есть соседняя комната с дверью в западной стене
+               Position doorLeft = rooms[i].getRigthDoor().getPosition();
+               Position doorRight = rooms[i + 1].getLeftDoor().getPosition();
+               createHorizontalCorridor(corridors, doorLeft, doorRight);
+           }
+        }
+
+        //Создаем вертикальные коридоры. Слева направо
+        for (int i = 0; i < ROOM_COUNT - 3; i++) {
+            if (rooms[i].getBottomDoor() != null) {//южная стена с дверью.
+                //Значит есть соседняя комната с дверью в северной стене
+                Position doorBottom = rooms[i].getBottomDoor().getPosition();
+                Position doorUpper = rooms[i + 3].getUpperDoor().getPosition();
+                createVerticalCorridor(corridors, doorBottom, doorUpper);
+            }
+        }
+
+        return corridors;
+    }
+
+    private void createHorizontalCorridor(List<Corridor> corridors, Position left, Position right) {
+        int leftX = left.getX() + 1;
+        int leftY = left.getY();
+        int rightX = right.getX() - 1;
+        int rightY = right.getY();
+        //Двери на одном уровне. Связываем одним горизонтальным коридором
+        if (left.getX() == right.getX()) {
+            corridors.add(new Corridor( new Position(leftX, leftY), new Position(rightX, rightY)));
+        } else {
+            //Двери на разных уровнях, создаем коридор с поворотом.
+            int cornerX = Room.rndBetween(leftX, rightX);
+            corridors.add(new Corridor( new Position(leftX, leftY), new Position(cornerX, leftY)));
+            corridors.add(new Corridor( new Position(cornerX, leftY), new Position(cornerX, rightY)));
+            corridors.add(new Corridor( new Position(cornerX, rightY), new Position(rightX, rightY)));
+        }
+    }
+
+    private void createVerticalCorridor(List<Corridor> corridors, Position bottom, Position upper) {
+        int bottomX = bottom.getX();
+        int bottomY = bottom.getY() + 1;
+        int upperX = upper.getX();
+        int upperY = upper.getY() - 1;
+        //Двери на одной вертикали - связываем одним коридором
+        if (bottom.getY() == upper.getY()) {
+            corridors.add(new Corridor( new Position(bottomX, bottomY), new Position(upperX, upperY)));
+        } else {
+            //Двери на разных X, создаем коридор с поворотом.
+            int cornerY = Room.rndBetween(bottomY, upperY);
+            corridors.add(new Corridor( new Position(bottomX, bottomY), new Position(bottomX, cornerY)));
+            corridors.add(new Corridor( new Position(bottomX, cornerY), new Position(upperX, cornerY)));
+            corridors.add(new Corridor( new Position(upperX, cornerY), new Position(upperX, upperY)));
+        }
+    }
+
 
     public Room[] generateRooms() {
         Room[] rooms = new Room[ROOM_COUNT];

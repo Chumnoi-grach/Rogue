@@ -72,6 +72,22 @@ public class Room {
         return doors;
     }
 
+    public Door getUpperDoor() {
+        return doors[0];
+    }
+
+    public Door getRigthDoor() {
+        return doors[1];
+    }
+
+    public Door getBottomDoor() {
+        return doors[2];
+    }
+
+    public Door getLeftDoor() {
+        return doors[3];
+    }
+
     public boolean putEntintyToRndPlace(Entity entity) {
         Position position = getRandomFreePosition();
         if (position == null) {
