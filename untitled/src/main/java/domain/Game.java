@@ -1,15 +1,17 @@
 package domain;
 
+import domain.level.Corridor;
 import domain.level.Generation;
 import domain.level.Level;
+import domain.level.Room;
 import domain.player.Player;
 
 public class Game {
     private Level currentLevel;
     private Player player;
     private Generation generator = new Generation();
-    private int currentRoom;//-1 если игрок не в комнате
-    private int currentCorridor;//-1 если игрок не в коридоре
+    private int currentRoom = -1;//-1 если игрок не в комнате
+    private int currentCorridor = -1;//-1 если игрок не в коридоре
 
     public Game() {
         // Создаем игрока
@@ -35,67 +37,63 @@ public class Game {
         return  player;
     }
 
+    private void setNewPosition(Position newPosition) {
+        //Проверка границ комнат и, коридоров
+        if (checkBounds(newPosition)) {
+            player.setPosition(newPosition);
+        } else {
+            //монстр
+            //нанести удар
+        }
+
+        //проверка, что под ногами: 1. предмет, 2. выход
+
+    }
+
+    private boolean checkBounds(Position newPosition) {
+        //Проверить стены комнаты
+        Room[] rooms = currentLevel.getRooms();
+        for (int i = 0; i < rooms.length; i++) {
+            if (rooms[i].isPositionInRoom(newPosition) || rooms[i].isPositionInDoor(newPosition)) {
+                currentRoom = i;
+                currentCorridor = -1;
+                return true;
+            }
+        }
+
+        //Проверить коридор
+        for (Corridor corridor : currentLevel.getCorridors()) {
+            if (corridor.positionInCorridor(newPosition)) {
+                currentCorridor = currentLevel.getCorridors().indexOf(corridor);
+                currentRoom = -1;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void moveLeft() {
         //проверка на возможность сдвига
         Position newPosition = new Position(player.getPosition().getX() - 1, player.getPosition().getY());
-        //проверить стенку слева
-        if (currentRoom >= 0) {
-            if (currentLevel.getRoom(currentRoom).isPositionInRoom(newPosition)
-            || currentLevel.getRoom(currentRoom).isPositionInDoor(newPosition)) {
-                player.setPosition(newPosition);
-            }
-
-        }
-        //проверить стенку коридора слева
-
-        //проверить монстра слева
+        setNewPosition(newPosition);
     }
 
     public void moveRight() {
         //проверка на возможность сдвига
         Position newPosition = new Position(player.getPosition().getX() + 1, player.getPosition().getY());
-        //проверить стенку слева
-        if (currentRoom >= 0) {
-            if (currentLevel.getRoom(currentRoom).isPositionInRoom(newPosition)
-                    || currentLevel.getRoom(currentRoom).isPositionInDoor(newPosition)) {
-                player.setPosition(newPosition);
-            }
-
-        }
-        //проверить стенку коридора слева
-
-        //проверить монстра слева
+        setNewPosition(newPosition);
     }
 
     public void moveUp() {
         //проверка на возможность сдвига
         Position newPosition = new Position(player.getPosition().getX(), player.getPosition().getY() - 1);
-        //проверить стенку слева
-        if (currentRoom >= 0) {
-            if (currentLevel.getRoom(currentRoom).isPositionInRoom(newPosition)
-                    || currentLevel.getRoom(currentRoom).isPositionInDoor(newPosition)) {
-                player.setPosition(newPosition);
-            }
-
-        }
-        //проверить стенку коридора слева
-
-        //проверить монстра слева
+        setNewPosition(newPosition);
     }
 
     public void moveDown() {
         //проверка на возможность сдвига
         Position newPosition = new Position(player.getPosition().getX(), player.getPosition().getY() + 1);
-        //проверить стенку слева
-        if (currentRoom >= 0) {
-            if (currentLevel.getRoom(currentRoom).isPositionInRoom(newPosition)
-                    || currentLevel.getRoom(currentRoom).isPositionInDoor(newPosition)) {
-                player.setPosition(newPosition);
-            }
-
-        }
-        //проверить стенку коридора слева
-
-        //проверить монстра слева
+        setNewPosition(newPosition);
     }
 }

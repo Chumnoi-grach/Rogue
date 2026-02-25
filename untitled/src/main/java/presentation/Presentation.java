@@ -241,6 +241,7 @@ for (Door door : room.getDoors()) {
     }
 
     public void putCh(char ch, int x, int y, TextColor color) throws IOException {
+        if (x < 0 || y < 0) return;
         // Получаем объект для рисования текста
         TextGraphics textGraphics = screen.newTextGraphics();
 

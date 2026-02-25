@@ -18,4 +18,11 @@ public class Corridor {
     public Position getRightCorner() {
         return rightCorner;
     }
+
+    public boolean positionInCorridor(Position position) {
+        return  position.getX() >= leftCorner.getX() &&
+                position.getY() >= leftCorner.getY() &&
+                position.getX() <= rightCorner.getX() &&
+                position.getY() <= rightCorner.getY();
+    }
 }
