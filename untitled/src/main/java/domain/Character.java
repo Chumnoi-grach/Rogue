@@ -4,6 +4,7 @@ import java.util.List;
 
 public abstract class Character implements Entity{
     List<String> types = List.of("Ghost", "Ogre", "SnakeMagician", "Vampire", "Zombie", "Player");
+    private String name;
     private String type;
 
 
@@ -16,11 +17,12 @@ public abstract class Character implements Entity{
     private Position position;
 
 
-    protected Character(String type, int level, Position position) {
+    protected Character(String name, String type, int level, Position position) {
         this.type = type;
         if (!types.contains(type)) {
             throw new IllegalArgumentException("Не соответствие типу: Ghost, Ogre, SnakeMagician, Vampire, Zombie, Player: " + type);
         }
+        this.name = name;
         this.strength = calculateStrength(type, level);
         this.dexterity = calculateDexterity(type, level);
         this.maxHealth = calculateMaxHealth(type, level);
@@ -31,6 +33,8 @@ public abstract class Character implements Entity{
     }
 
     // Геттеры
+    public String getName() {return name;}
+
     public String getType() {return type;}
 
     public int getStrength() {return strength;}
@@ -46,6 +50,10 @@ public abstract class Character implements Entity{
     private int getLevel(int level) {return this.level;}
 
     // Сеттеры
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public void setMaxHealth(int health) {
         this.maxHealth = health;
     }
@@ -127,8 +135,8 @@ public abstract class Character implements Entity{
 
     @Override
     public String toString() {
-        return String.format("%s (%d/%d hp) | Сила: %d | Ловкость: %d",
-                type, currentHealth, maxHealth, strength, dexterity);
+        return String.format("%s %s (%d/%d hp) | Сила: %d | Ловкость: %d | Position: %s",
+                type, name, currentHealth, maxHealth, strength, dexterity, position);
     }
 
 

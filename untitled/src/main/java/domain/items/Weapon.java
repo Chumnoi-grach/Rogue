@@ -8,8 +8,8 @@ public class Weapon extends BaseItem{
     private final int bonusDexterity;
     private boolean equipped;
 
-    public Weapon(String name, char symbol, int bonusStrength, int bonusDexterity, Position position) {
-        super(name, symbol, ItemType.WEAPON, position);
+    public Weapon(String name, int bonusStrength, int bonusDexterity, Position position) {
+        super(name, ItemType.WEAPON, position);
         this.bonusStrength = bonusStrength;
         this.bonusDexterity = bonusDexterity;
         this.equipped = false;

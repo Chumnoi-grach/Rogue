@@ -11,6 +11,7 @@ public class Enemy extends Character {
         WANDERING,          //БЛУЖДАЮЩИЙ
         CHASING            //ПРЕСЛЕДУЮЩИЙ
     }
+    private String name;
     List<String> typesOfEnemy = List.of("Ghost", "Ogre", "SnakeMagician", "Vampire", "Zombie");
 
     private int hostilityRange;
@@ -24,8 +25,8 @@ public class Enemy extends Character {
         return this.EnemyType;
     }
 
-    public Enemy(String type, int level, Position position) {
-        super(type, level, position);
+    public Enemy(String name, String type, int level, Position position) {
+        super(name, type, level, position);
 
         if (!typesOfEnemy.contains(type) && type != "Player") {
             throw new IllegalArgumentException("Не соответствие типу: Ghost, Ogre, SnakeMagician, Vampire, Zombie");
