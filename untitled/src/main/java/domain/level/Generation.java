@@ -74,6 +74,8 @@ public class Generation {
         int endRoom = getRoomAtDistance(startRoom, roomGraph.getConnections());
         level.setStartRoom(startRoom);
         level.setEndRoom(endRoom);
+
+        //todo исключить ситуацию лестницы около двери
         level.setStairsDown(level.getRoom(endRoom).getRandomFreePosition());
 
 

@@ -38,15 +38,17 @@ public class Game {
     }
 
     private void setNewPosition(Position newPosition) {
+        //проверка монстра:
+        //нанести удар
+        //если удар убил монстра: 1.забираем золото, 2.встаем на клетку
+
+        //иначе
         //Проверка границ комнат и, коридоров
         if (checkBounds(newPosition)) {
             player.setPosition(newPosition);
-        } else {
-            //монстр
-            //нанести удар
         }
 
-        //проверка, что под ногами: 1. предмет, 2. выход
+        //Проверка, что под ногами: 1. предмет, 2. выход с уровня
 
     }
 
@@ -74,25 +76,21 @@ public class Game {
     }
 
     public void moveLeft() {
-        //проверка на возможность сдвига
         Position newPosition = new Position(player.getPosition().getX() - 1, player.getPosition().getY());
         setNewPosition(newPosition);
     }
 
     public void moveRight() {
-        //проверка на возможность сдвига
         Position newPosition = new Position(player.getPosition().getX() + 1, player.getPosition().getY());
         setNewPosition(newPosition);
     }
 
     public void moveUp() {
-        //проверка на возможность сдвига
         Position newPosition = new Position(player.getPosition().getX(), player.getPosition().getY() - 1);
         setNewPosition(newPosition);
     }
 
     public void moveDown() {
-        //проверка на возможность сдвига
         Position newPosition = new Position(player.getPosition().getX(), player.getPosition().getY() + 1);
         setNewPosition(newPosition);
     }

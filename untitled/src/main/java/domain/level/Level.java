@@ -13,7 +13,7 @@ public class Level {
     private final Room[] rooms;
     private final List<Corridor> corridors;
     //private final Map<Position, Entity> entities; // позиция -> сущность
-    private int startRoom;
+    private int startRoom;// 0 - 8
     private int endRoom;
     private Position stairsDown; // лестница вниз
 
