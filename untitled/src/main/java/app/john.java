@@ -32,48 +32,58 @@ public class john {
         Presentation presentation = new Presentation();
         presentation.start();
 
-        Game currentGame = new Game();
-        boolean isRunning = true;
+        //presentation.displayStartMenu();// здесь холдим кнопки. ждем 1 - 5
 
-        while (isRunning) {
-            presentation.displayGame(currentGame);
+        //String name = presentation.displayEnterNameDialog();
+        String name = "john";
 
-            presentation.refresh();
+        if (name != null) {
+            boolean isRunning = true;
+            Game currentGame = new Game(name);
 
-            KeyStroke keyStroke = presentation.getScreen().readInput();
+            while (isRunning) {
+                presentation.displayGame(currentGame);
 
-            if (keyStroke != null) {
-                KeyType keyType = keyStroke.getKeyType();
+                presentation.refresh();
 
-                switch (keyType) {
-                    case Escape:
-                        System.out.println("Выход из программы");
-                        isRunning = false; // выход из цикла
-                        break;
+                KeyStroke keyStroke = presentation.getScreen().readInput();
 
-                    case ArrowLeft:
-                        currentGame.moveLeft();
-                        break;
+                if (keyStroke != null) {
+                    KeyType keyType = keyStroke.getKeyType();
 
-                    case ArrowRight:
-                        currentGame.moveRight();
-                        break;
+                    switch (keyType) {
+                        case Escape:
+                            System.out.println("Выход из программы");
+                            isRunning = false; // выход из цикла
+                            break;
 
-                    case ArrowUp:
-                        currentGame.moveUp();
-                        break;
+                        case ArrowLeft:
+                            currentGame.moveLeft();
+                            break;
 
-                    case ArrowDown:
-                        currentGame.moveDown();
-                        break;
+                        case ArrowRight:
+                            currentGame.moveRight();
+                            break;
 
-                    default:
-                        System.out.println("Генерируем новый уровень");
-                        currentGame.generateLevel(1);
-                        break;
+                        case ArrowUp:
+                            currentGame.moveUp();
+                            break;
+
+                        case ArrowDown:
+                            currentGame.moveDown();
+                            break;
+
+                        default:
+                            System.out.println("Генерируем новый уровень");
+                            currentGame.generateLevel(1);
+                            break;
+                    }
                 }
             }
+
         }
+
+
 
         presentation.end(); // закрываем presentation после цикла
     }

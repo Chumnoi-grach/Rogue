@@ -13,9 +13,9 @@ public class Game {
     private int currentRoom = -1;//-1 если игрок не в комнате
     private int currentCorridor = -1;//-1 если игрок не в коридоре
 
-    public Game() {
+    public Game(String name) {
         // Создаем игрока
-        this.player = new Player("John", new Position(0,0));
+        this.player = new Player(name, new Position(0,0));
         // генерируем первый уровень
         generateLevel(1);
 

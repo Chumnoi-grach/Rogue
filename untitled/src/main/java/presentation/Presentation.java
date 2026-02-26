@@ -30,6 +30,7 @@ public class Presentation {
     private final Terminal terminal;
     private final Screen screen;
 
+    private static final TextColor COLORBGROUND = TextColor.ANSI.BLACK;
     private static final TextColor COLORPLAYER = TextColor.ANSI.WHITE;
     private static final TextColor COLORBOUND = TextColor.ANSI.YELLOW;
     private static final TextColor COLORDOOR = TextColor.ANSI.YELLOW_BRIGHT;
@@ -47,6 +48,12 @@ public class Presentation {
     private static final String ROOMFLOOR = ".";
     private static final String PLAYER = "@";
     private static final String STAIRSDOWN = "#";
+
+    private final int MENU_WIDTH = 20;
+    private final int MENU_HEIGHT = 18;
+    private static final TextColor MENUBORDER = TextColor.ANSI.WHITE;
+    private static final TextColor MENUBGROUND = TextColor.ANSI.BLACK_BRIGHT;
+
 /*
 ╔═════╗
 ║     ┃░░░
@@ -80,7 +87,7 @@ public class Presentation {
             }
             terminal.enterPrivateMode();
             screen = new TerminalScreen(terminal);
-            System.out.println("New Presentation");
+            //System.out.println("New Presentation");
         } catch (IOException e) {
             System.err.println("Failed to initialize terminal: " + e.getMessage());
             throw e;
@@ -105,21 +112,52 @@ public class Presentation {
 
     public void displayGame(Game game) throws IOException {
         clear();
-        printRooms(game.getCurrentLevel());
-        printDoors(game.getCurrentLevel());
-        printCorridors(game.getCurrentLevel());
+        printRooms(game.getCurrentLevel());                     // печать комнат
+        printDoors(game.getCurrentLevel());                     // печать дверей
+        printCorridors(game.getCurrentLevel());                 // печать коридоров
+        putCh(STAIRSDOWN.charAt(0),                             // печать лестницы вниз
+                game.getCurrentLevel().getStairsDown().getX(),
+                game.getCurrentLevel().getStairsDown().getY(),
+                COLORSTAIRS, COLORBGROUND);
+
         // ПЕЧАТЬ СУЩНОСТЕЙ
-        // ИГРОКА
 
-        putCh(STAIRSDOWN.charAt(0), game.getCurrentLevel().getStairsDown().getX(), game.getCurrentLevel().getStairsDown().getY(), COLORSTAIRS);
+        printStatusBar(game);                                   // Печать строки состояния
+        printPlayer(game.getPlayer());                          // Печать игрока
 
-        printPlayer(game.getPlayer());
+    }
+
+    private void printStatusBar(Game game) throws IOException {
+        //печать строки состояния
+        // Level: 2  |  HP: 10(45)  |  Strength: 22(22)  |  Agility: 15  |  Gold: 33
+        String levelStr = "Level " + game.getCurrentLevel().getLevelNumber();
+        putString(levelStr, 1, WINDOW_HEIGHT - 1, MENUBGROUND, COLORBGROUND);
+        int strLength = 1 + levelStr.length();
+        putString(" | " , strLength , WINDOW_HEIGHT - 1, MENUBGROUND, COLORBGROUND);
+
+        String playerHP = "HP: " + game.getPlayer().getCurrentHealth() + "/" + game.getPlayer().getMaxHealth();
+        putString(playerHP, strLength + 3, WINDOW_HEIGHT - 1, TextColor.ANSI.RED_BRIGHT, COLORBGROUND);
+        strLength += playerHP.length() + 3;
+        putString(" | " , strLength , WINDOW_HEIGHT - 1, MENUBGROUND, COLORBGROUND);
+
+        String playerStrength = "Strength: " + game.getPlayer().getStrength();
+        putString(playerStrength, strLength + 3, WINDOW_HEIGHT - 1, TextColor.ANSI.GREEN_BRIGHT, COLORBGROUND);
+        strLength += playerStrength.length() + 3;
+        putString(" | " , strLength , WINDOW_HEIGHT - 1, MENUBGROUND, COLORBGROUND);
+
+        String playerAgility = "Agility: " + game.getPlayer().getDexterity();
+        putString(playerAgility, strLength + 3, WINDOW_HEIGHT - 1, TextColor.ANSI.CYAN, COLORBGROUND);
+        strLength += playerAgility.length() + 3;
+        putString(" | " , strLength , WINDOW_HEIGHT - 1, MENUBGROUND, COLORBGROUND);
+
+        String playerGold = "Gold: " + game.getPlayer().getScore();
+        putString(playerGold, strLength + 3, WINDOW_HEIGHT - 1, TextColor.ANSI.YELLOW_BRIGHT, COLORBGROUND);
     }
 
 
-    public void printPlayer(Player player) throws IOException {
+    private void printPlayer(Player player) throws IOException {
         if (player != null)
-            putCh(PLAYER.charAt(0), player.getPosition().getX(), player.getPosition().getY(), COLORPLAYER);
+            putCh(PLAYER.charAt(0), player.getPosition().getX(), player.getPosition().getY(), COLORPLAYER, COLORBGROUND);
     }
 
     private void printCorridors(Level currentLevel) throws IOException {
@@ -131,14 +169,10 @@ public class Presentation {
             int x2 = corridor.getRightCorner().getX();
             int y2 = corridor.getRightCorner().getY();
 
-            // нормализация, чтобы x1 <= x2 и y1 <= y2
-            if (x1 > x2) { int t = x1; x1 = x2; x2 = t; }
-            if (y1 > y2) { int t = y1; y1 = y2; y2 = t; }
-
             // рисуем включительно по x2 и y2
             for (int x = x1; x <= x2; x++) {
                 for (int y = y1; y <= y2; y++) {
-                    putCh(PASSAGE.charAt(0), x, y, COLORPASSAGE);
+                    putCh(PASSAGE.charAt(0), x, y, COLORPASSAGE, COLORBGROUND);
                 }
             }
         }
@@ -152,106 +186,151 @@ public class Presentation {
                 putCh(HORIZDOOR.charAt(0),
                         currentLevel.getRoom(i).getUpperDoor().getPosition().getX(),
                         currentLevel.getRoom(i).getUpperDoor().getPosition().getY(),
-                        COLORDOOR);
+                        COLORDOOR, COLORBGROUND);
             }
             if(doors[1] != null) {
                 putCh(VERTDOOR.charAt(0),
                         currentLevel.getRoom(i).getRigthDoor().getPosition().getX(),
                         currentLevel.getRoom(i).getRigthDoor().getPosition().getY(),
-                        COLORDOOR);
+                        COLORDOOR, COLORBGROUND);
             }
             if(doors[2] != null) {
                 putCh(HORIZDOOR.charAt(0),
                         currentLevel.getRoom(i).getBottomDoor().getPosition().getX(),
                         currentLevel.getRoom(i).getBottomDoor().getPosition().getY(),
-                        COLORDOOR);
+                        COLORDOOR, COLORBGROUND);
             }
             if(doors[3] != null) {
                 putCh(VERTDOOR.charAt(0),
                         currentLevel.getRoom(i).getLeftDoor().getPosition().getX(),
                         currentLevel.getRoom(i).getLeftDoor().getPosition().getY(),
-                        COLORDOOR);
+                        COLORDOOR, COLORBGROUND);
             }
         }
     }
 
     private void printRooms(Level currentLevel) throws IOException {
-        for (int i = 0; i < ROOM_COUNT; i++) {
-            Room room = currentLevel.getRoom(i);
-
-            int leftX = room.getLeftCorner().getX();
-            int leftY = room.getLeftCorner().getY();
-            int rightX = room.getRightCorner().getX();
-            int rightY = room.getRightCorner().getY();
-
-            // Рисуем верхнюю горизонтальную стену (с углами)
-            for (int x = leftX + 1; x < rightX; x++) {
-                putCh(HORIZBOUND.charAt(0), x, leftY, COLORBOUND);
-            }
-
-            // Рисуем нижнюю горизонтальную стену (с углами)
-            for (int x = leftX + 1; x < rightX; x++) {
-                putCh(HORIZBOUND.charAt(0), x, rightY, COLORBOUND);
-            }
-
-            // Рисуем левую вертикальную стену (с углами)
-            for (int y = leftY + 1; y < rightY; y++) {
-                putCh(VERTBOUND.charAt(0), leftX, y, COLORBOUND);
-            }
-
-            // Рисуем правую вертикальную стену (с углами)
-            for (int y = leftY + 1; y < rightY; y++) {
-                putCh(VERTBOUND.charAt(0), rightX, y, COLORBOUND);
-            }
-
-            // Рисуем углы
-            putCh(LEFTTOPBOUND.charAt(0), leftX, leftY, COLORBOUND);     // ╔
-            putCh(RIGHTTOPBOUND.charAt(0), rightX, leftY, COLORBOUND);  // ╗
-            putCh(LEFTBOTBOUND.charAt(0), leftX, rightY, COLORBOUND);   // ╚
-            putCh(RIGHTBOTBOUND.charAt(0), rightX, rightY, COLORBOUND); // ╝
-
-            // Заготовка для рисования дверей
-            // TODO: после добавления координат дверей в Room
-        /*
-        // Рисуем двери (если есть)
-        for (Door door : room.getDoors()) {
-            int doorX = door.getX();
-            int doorY = door.getY();
-
-            if (door.isHorizontal()) {
-                putCh(horizontalDoor.charAt(0), doorX, doorY, TextColor.ANSI.YELLOW);
-            } else {
-                putCh(verticalDoor.charAt(0), doorX, doorY, TextColor.ANSI.YELLOW);
-            }
-        }
-
-// В классе Door предполагается:
-// - getX(), getY() - координаты двери
-// - isHorizontal() - true для горизонтальной двери, false для вертикальной
-
-for (Door door : room.getDoors()) {
-    if (door.isHorizontal()) {
-        putCh(horizontalDoor.charAt(0), door.getX(), door.getY(), TextColor.ANSI.YELLOW);
-    } else {
-        putCh(verticalDoor.charAt(0), door.getX(), door.getY(), TextColor.ANSI.YELLOW);
-    }
-}
-        */
+        for (Room room : currentLevel.getRooms()) {
+            printRoomBox(room.getLeftCorner(), room.getRightCorner(), COLORBOUND, COLORBGROUND);
         }
     }
 
-    public void putCh(char ch, int x, int y, TextColor color) throws IOException {
+    private void printRoomBox(Position leftCorner, Position rightCorner, TextColor color, TextColor bgcolor) throws IOException {
+        int leftX = leftCorner.getX();
+        int leftY = leftCorner.getY();
+        int rightX = rightCorner.getX();
+        int rightY = rightCorner.getY();
+
+        // Рисуем верхнюю горизонтальную стену (с углами)
+        for (int x = leftX + 1; x < rightX; x++) {
+            putCh(HORIZBOUND.charAt(0), x, leftY, color, bgcolor);
+        }
+
+        // Рисуем нижнюю горизонтальную стену (с углами)
+        for (int x = leftX + 1; x < rightX; x++) {
+            putCh(HORIZBOUND.charAt(0), x, rightY, color, bgcolor);
+        }
+
+        // Рисуем левую вертикальную стену (с углами)
+        for (int y = leftY + 1; y < rightY; y++) {
+            putCh(VERTBOUND.charAt(0), leftX, y, color, bgcolor);
+        }
+
+        // Рисуем правую вертикальную стену (с углами)
+        for (int y = leftY + 1; y < rightY; y++) {
+            putCh(VERTBOUND.charAt(0), rightX, y, color, bgcolor);
+        }
+
+        // Рисуем углы
+        putCh(LEFTTOPBOUND.charAt(0), leftX, leftY, color, bgcolor);     // ╔
+        putCh(RIGHTTOPBOUND.charAt(0), rightX, leftY, color, bgcolor);  // ╗
+        putCh(LEFTBOTBOUND.charAt(0), leftX, rightY, color, bgcolor);   // ╚
+        putCh(RIGHTBOTBOUND.charAt(0), rightX, rightY, color, bgcolor); // ╝
+    }
+
+    private void displayLogo() throws IOException {
+        putString("THE 'ROGUE' GAME", WINDOW_WIDTH / 2 - 8, 8, COLORDOOR, COLORBGROUND);
+    }
+
+    public void displayStartMenu() throws IOException {
+        displayLogo();
+        int leftX = WINDOW_WIDTH / 2 - MENU_WIDTH / 2;
+        int leftY = 10;
+        int rightX = WINDOW_WIDTH / 2 + MENU_WIDTH / 2;
+        int rightY = MENU_HEIGHT + 10;
+
+        Position leftCorner = new Position(leftX,leftY);
+        Position rightCorner = new Position(rightX,rightY);
+        printRoomBox(leftCorner, rightCorner, MENUBORDER, MENUBGROUND);
+        for (int x = leftX + 1; x < rightX; x++) {
+            for (int y = leftY + 1; y < rightY; y++) {
+                putCh(' ', x, y, MENUBGROUND, MENUBGROUND);
+            }
+        }
+
+        String[] menu = new String[]{
+                "1 - Start Game",
+                "2 - Load Game",
+                "3 - Leaderboard",
+                "4 - Exit",
+                " "," ",
+                "Keyboard:",
+                "ESC - Menu",
+                "WASD - Move",
+                "0-9 - Use item",
+                "h - Weapons",
+                "j - Foods",
+                "k - Potions",
+                "e - Scrolls",
+                "p - Save Game"
+        };
+
+        for (int i = 0; i < menu.length; i++) {
+            putString(menu[i], leftX + 3, leftY + 2 + i, MENUBORDER, MENUBGROUND);
+        }
+    }
+
+    public String displayEnterNameDialog() throws IOException {
+        int leftX = WINDOW_WIDTH / 2 - MENU_WIDTH / 2;
+        int leftY = 12;
+        int rightX = WINDOW_WIDTH / 2 + MENU_WIDTH / 2;
+        int rightY = leftY + 2;
+
+        Position leftCorner = new Position(leftX,leftY);
+        Position rightCorner = new Position(rightX,rightY);
+        printRoomBox(leftCorner, rightCorner, MENUBORDER, MENUBGROUND);
+        for (int x = leftX + 1; x < rightX; x++) {
+            for (int y = leftY + 1; y < rightY; y++) {
+                putCh(' ', x, y, MENUBGROUND, MENUBGROUND);
+            }
+        }
+
+        putString(" Enter name ", leftX + 4, leftY, MENUBORDER, MENUBGROUND);
+        putString(" Esc: cancel ", leftX + 6, leftY + 2, MENUBORDER, MENUBGROUND);
+        EnterName enterName = new EnterName(screen,  leftX + 2, leftY+1, 17);
+        return enterName.show();
+    }
+
+    public void putCh(char ch, int x, int y, TextColor color, TextColor bgColor) throws IOException {
         if (x < 0 || y < 0) return;
         // Получаем объект для рисования текста
         TextGraphics textGraphics = screen.newTextGraphics();
-
         // Устанавливаем цвет
         textGraphics.setForegroundColor(color);
-
+        textGraphics.setBackgroundColor(bgColor);
         // Рисуем символ в нужной позиции
         textGraphics.putString(x, y, String.valueOf(ch));
+    }
 
-//        screen.refresh();
+    public void putString(String str, int x, int y, TextColor color, TextColor bgColor) throws IOException {
+        if (str == null || str.isEmpty() || x < 0 || y < 0) return;
+        // Получаем объект для рисования текста
+        TextGraphics textGraphics = screen.newTextGraphics();
+        // Устанавливаем цвет
+        textGraphics.setForegroundColor(color);
+        textGraphics.setBackgroundColor(bgColor);
+        // Рисуем строку в нужной позиции
+        textGraphics.putString(x, y, str);
     }
 
     public void refresh() throws IOException {
