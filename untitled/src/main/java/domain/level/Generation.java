@@ -64,7 +64,6 @@ public class Generation {
         List<Corridor> corridors = genCorridors(rooms);
 
         // 3. Создаем уровень
-//        Level level = new Level(levelNumber, rooms, corridors);
         Level level = new Level(levelNumber, rooms, corridors);
 
         //Определить стартовую и конечные комнаты.
@@ -74,10 +73,7 @@ public class Generation {
         int endRoom = getRoomAtDistance(startRoom, roomGraph.getConnections());
         level.setStartRoom(startRoom);
         level.setEndRoom(endRoom);
-
-        //todo исключить ситуацию лестницы около двери
-        level.setStairsDown(level.getRoom(endRoom).getRandomFreePosition());
-
+        level.setStairsDown(level.getRoom(endRoom).getRandomFreePosition(1));
 
         // 4. Размещаем сущности
         //populateLevel(level, levelNumber);

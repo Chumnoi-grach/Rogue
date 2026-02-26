@@ -99,7 +99,8 @@ public class Room {
         return true;
     }
 
-    public Position getRandomFreePosition() {
+
+    public Position getRandomFreePosition(int decreaseArea) {
         if (!isFreePositions) return null;
 
         //Собрать координаты занятых позиций в виде Set String "x,y"
@@ -109,10 +110,15 @@ public class Room {
             occupied.add(pos.getX() + "," + pos.getY());
         }
 
+        int leftX = this.getLeftCorner().getX() + 1 + decreaseArea;
+        int leftY = this.getLeftCorner().getY() + 1 + decreaseArea;
+        int rightX = this.getRightCorner().getX() - decreaseArea;
+        int rightY = this.getRightCorner().getY() - decreaseArea;
+
         // Список свободных клеток
         List<Position> freePositions = new ArrayList<>();
-        for (int x = this.getLeftCorner().getX() + 1; x < this.getRightCorner().getX(); x++) {
-            for (int y = this.getLeftCorner().getY() + 1; y < this.getRightCorner().getY(); y++) {
+        for (int x = leftX; x < rightX; x++) {
+            for (int y = leftY; y < rightY; y++) {
                 if (!occupied.contains(x + "," + y)) {
                     freePositions.add(new Position(x,y));
                 }
@@ -125,6 +131,10 @@ public class Room {
         }
 
         return freePositions.get(rndBetween(0,freePositions.size() - 1));
+    }
+
+    public Position getRandomFreePosition() {
+       return getRandomFreePosition(0);
     }
 
     // Гетеры, сеттеры

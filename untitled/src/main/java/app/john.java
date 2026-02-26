@@ -77,6 +77,7 @@ public class john {
 
         presentation.end(); // закрываем presentation после цикла
     }
+
 }
 
 /*
