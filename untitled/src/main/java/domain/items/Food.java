@@ -7,8 +7,8 @@ public class Food extends BaseItem{
     private final ConsumableType effectType;          // Тип эффекта (enum)
     private final int bonus;         // На сколько повышает характеристику
 
-    public Food(String name, char symbol, int bonus, Position position) {
-        super(name, symbol, ItemType.SCROLL, position);
+    public Food(String name, int bonus, Position position) {
+        super(name, ItemType.SCROLL, position);
         this.effectType = ConsumableType.HEALTH;
         this.bonus = bonus;
     }

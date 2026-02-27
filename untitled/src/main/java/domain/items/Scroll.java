@@ -9,8 +9,8 @@ public class Scroll extends BaseItem implements Entity, Backpackable {
     private final ConsumableType effectType;          // Тип свитка (enum)
     private final int bonus;         // На сколько повышает характеристику
 
-    public Scroll(String name, char symbol, int bonus, ConsumableType effectType, Position position) {
-        super(name, symbol, ItemType.SCROLL, position);
+    public Scroll(String name, int bonus, ConsumableType effectType, Position position) {
+        super(name, ItemType.SCROLL, position);
         this.effectType = effectType;
         this.bonus = bonus;
     }

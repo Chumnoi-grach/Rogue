@@ -24,7 +24,7 @@ public class Player extends Character implements Entity {
 
     //Конструктор
     public Player(String name, Position startPosition) {
-        super("Player", 0, startPosition);
+        super(name,"Player", 0, startPosition);
         this.name = name;
         this.backpack = new Backpack();
         this.equippedWeapon = null;

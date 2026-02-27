@@ -9,8 +9,8 @@ public class Potion extends BaseItem {
     private ConsumableType effectType; // Тип эффекта (enum)
     private int usageTime;
 
-    public Potion(String name, char symbol, int bonus, int usageTime, ConsumableType effectType, Position position) {
-        super(name, symbol, ItemType.POTION, position);
+    public Potion(String name, int bonus, int usageTime, ConsumableType effectType, Position position) {
+        super(name, ItemType.POTION, position);
         this.usageTime = usageTime;
         this.bonus = bonus;
         this.effectType = effectType;
