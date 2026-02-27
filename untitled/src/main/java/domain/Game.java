@@ -14,19 +14,19 @@ public class Game {
     private int currentCorridor = -1;//-1 если игрок не в коридоре
 
     public Game(String name) {
-        // Создаем игрока
-        this.player = new Player(name, new Position(0,0));
+        this.player = new Player(name, new Position(0, 0));
         // генерируем первый уровень
         generateLevel(1);
-
     }
 
 
     public void generateLevel(int levelNumber) {
         this.currentLevel = generator.generateLevel(levelNumber);
-        //После генерации уровня помещаем игрока в стартовую комнату
+
+        // помещаем игрока в стартовую комнату
         currentRoom = currentLevel.getStartRoom();
-        player.setPosition(currentLevel.getRoom(currentRoom).getRandomFreePosition());
+        Position position = currentLevel.getRoom(currentRoom).getRandomFreePosition();
+        player.setPosition(position);
     }
 
     public Level getCurrentLevel() {

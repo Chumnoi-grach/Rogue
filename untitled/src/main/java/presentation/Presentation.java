@@ -253,26 +253,11 @@ public class Presentation {
     }
 
     public void displayStartMenu() throws IOException {
-        displayLogo();
-        int leftX = WINDOW_WIDTH / 2 - MENU_WIDTH / 2;
-        int leftY = 10;
-        int rightX = WINDOW_WIDTH / 2 + MENU_WIDTH / 2;
-        int rightY = MENU_HEIGHT + 10;
-
-        Position leftCorner = new Position(leftX,leftY);
-        Position rightCorner = new Position(rightX,rightY);
-        printRoomBox(leftCorner, rightCorner, MENUBORDER, MENUBGROUND);
-        for (int x = leftX + 1; x < rightX; x++) {
-            for (int y = leftY + 1; y < rightY; y++) {
-                putCh(' ', x, y, MENUBGROUND, MENUBGROUND);
-            }
-        }
-
         String[] menu = new String[]{
                 "1 - Start Game",
                 "2 - Load Game",
                 "3 - Leaderboard",
-                "4 - Exit",
+                "ESC - Exit",
                 " "," ",
                 "Keyboard:",
                 "ESC - Menu",
@@ -285,8 +270,33 @@ public class Presentation {
                 "p - Save Game"
         };
 
+        int leftX = WINDOW_WIDTH / 2 - MENU_WIDTH / 2;
+        int leftY = 10;
+        int rightX = WINDOW_WIDTH / 2 + MENU_WIDTH / 2;
+        int rightY = leftY + menu.length + 2;
+
+        clearBox(new Position(leftX - 1, leftY - 3), new Position(rightX + 1, rightY + 1));
+        displayLogo();
+
+        Position leftCorner = new Position(leftX, leftY);
+        Position rightCorner = new Position(rightX, rightY);
+        printRoomBox(leftCorner, rightCorner, MENUBORDER, MENUBGROUND);
+        for (int x = leftX + 1; x < rightX; x++) {
+            for (int y = leftY + 1; y < rightY; y++) {
+                putCh(' ', x, y, MENUBGROUND, MENUBGROUND);
+            }
+        }
+
         for (int i = 0; i < menu.length; i++) {
             putString(menu[i], leftX + 3, leftY + 2 + i, MENUBORDER, MENUBGROUND);
+        }
+    }
+
+    private void clearBox(Position leftCorner, Position rightCorner) throws IOException {
+        for (int x = leftCorner.getX(); x < rightCorner.getX() + 1; x++) {
+            for (int y = leftCorner.getY(); y < rightCorner.getY() + 1; y++) {
+                putCh(' ', x, y, TextColor.ANSI.BLACK, TextColor.ANSI.BLACK);
+            }
         }
     }
 
@@ -296,8 +306,8 @@ public class Presentation {
         int rightX = WINDOW_WIDTH / 2 + MENU_WIDTH / 2;
         int rightY = leftY + 2;
 
-        Position leftCorner = new Position(leftX,leftY);
-        Position rightCorner = new Position(rightX,rightY);
+        Position leftCorner = new Position(leftX, leftY);
+        Position rightCorner = new Position(rightX, rightY);
         printRoomBox(leftCorner, rightCorner, MENUBORDER, MENUBGROUND);
         for (int x = leftX + 1; x < rightX; x++) {
             for (int y = leftY + 1; y < rightY; y++) {
@@ -309,6 +319,10 @@ public class Presentation {
         putString(" Esc: cancel ", leftX + 6, leftY + 2, MENUBORDER, MENUBGROUND);
         EnterName enterName = new EnterName(screen,  leftX + 2, leftY+1, 17);
         return enterName.show();
+    }
+
+    public void displayLeaderboard() {
+
     }
 
     public void putCh(char ch, int x, int y, TextColor color, TextColor bgColor) throws IOException {

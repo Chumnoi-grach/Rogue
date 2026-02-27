@@ -3,10 +3,7 @@ package domain.level;
 import domain.Entity;
 import domain.Position;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Level {
     private final int levelNumber;

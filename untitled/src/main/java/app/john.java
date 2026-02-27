@@ -1,94 +1,16 @@
 package app;
 
-//import com.googlecode.lanterna.TextColor;
-//import com.googlecode.lanterna.input.KeyStroke;
-//import com.googlecode.lanterna.input.KeyType;
-//import presentation.Presentation;
-
-import com.googlecode.lanterna.input.KeyStroke;
-import com.googlecode.lanterna.input.KeyType;
 import domain.*;
-import domain.items.Scroll;
-
-//import domain.Player;
-import domain.Position;
-import domain.items.Scroll;
-import domain.level.RoomGraph;
 import presentation.Presentation;
-
-import static com.googlecode.lanterna.input.KeyType.Enter;
-
 
 public class john {
     public static void main(String[] args) throws Exception {
-//        RoomGraph graph = new RoomGraph();
-//        System.out.println("Source full grid:");
-//        graph.printGraph();
-//        graph.printMatrix();
-//        // Проверим связность финального графа
-//        System.out.println("Graph is connected? " + graph.isConnected());
-
-
         Presentation presentation = new Presentation();
-        presentation.start();
-
-        //presentation.displayStartMenu();// здесь холдим кнопки. ждем 1 - 5
-
-        //String name = presentation.displayEnterNameDialog();
-        String name = "john";
-
-        if (name != null) {
-            boolean isRunning = true;
-            Game currentGame = new Game(name);
-
-            while (isRunning) {
-                presentation.displayGame(currentGame);
-
-                presentation.refresh();
-
-                KeyStroke keyStroke = presentation.getScreen().readInput();
-
-                if (keyStroke != null) {
-                    KeyType keyType = keyStroke.getKeyType();
-
-                    switch (keyType) {
-                        case Escape:
-                            System.out.println("Выход из программы");
-                            isRunning = false; // выход из цикла
-                            break;
-
-                        case ArrowLeft:
-                            currentGame.moveLeft();
-                            break;
-
-                        case ArrowRight:
-                            currentGame.moveRight();
-                            break;
-
-                        case ArrowUp:
-                            currentGame.moveUp();
-                            break;
-
-                        case ArrowDown:
-                            currentGame.moveDown();
-                            break;
-
-                        default:
-                            System.out.println("Генерируем новый уровень");
-                            currentGame.generateLevel(1);
-                            break;
-                    }
-                }
-            }
-
-        }
-
-
-
-        presentation.end(); // закрываем presentation после цикла
+        GameLoop gameLoop = new GameLoop(presentation);
+        gameLoop.run();
     }
-
 }
+
 
 /*
 //  использование класса Игрок, свиток.
