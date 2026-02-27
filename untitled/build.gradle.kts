@@ -5,7 +5,7 @@ plugins {
 
 // Указываем главный класс приложения
 application {
-    mainClass.set("app.Main")
+    mainClass.set("app.john")
 }
 
 group = "org.example"

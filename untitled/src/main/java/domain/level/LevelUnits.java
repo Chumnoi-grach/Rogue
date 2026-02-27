@@ -2,6 +2,8 @@ package domain.level;
 
 import domain.Entity;
 import domain.Position;
+import domain.items.BaseItem;
+import domain.monsters.Enemy;
 
 import java.util.*;
 public class LevelUnits {
@@ -13,6 +15,10 @@ public class LevelUnits {
             return false;
         }
         return entities.add(entity);
+    }
+
+    public boolean deleteEntity(Entity entity) {
+        return entities.remove(entity);
     }
 
     public Entity getEntityAt(Position pos) {
