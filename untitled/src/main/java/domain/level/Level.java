@@ -3,17 +3,14 @@ package domain.level;
 import domain.Entity;
 import domain.Position;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Level {
     private final int levelNumber;
     private final Room[] rooms;
     private final List<Corridor> corridors;
     //private final Map<Position, Entity> entities; // позиция -> сущность
-    private int startRoom;
+    private int startRoom;// 0 - 8
     private int endRoom;
     private Position stairsDown; // лестница вниз
 

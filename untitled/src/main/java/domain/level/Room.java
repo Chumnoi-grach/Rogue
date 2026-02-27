@@ -99,7 +99,8 @@ public class Room {
         return true;
     }
 
-    public Position getRandomFreePosition() {
+
+    public Position getRandomFreePosition(int decreaseArea) {
         if (!isFreePositions) return null;
 
         //Собрать координаты занятых позиций в виде Set String "x,y"
@@ -109,10 +110,15 @@ public class Room {
             occupied.add(pos.getX() + "," + pos.getY());
         }
 
+        int leftX = this.getLeftCorner().getX() + 1 + decreaseArea;
+        int leftY = this.getLeftCorner().getY() + 1 + decreaseArea;
+        int rightX = this.getRightCorner().getX() - decreaseArea;
+        int rightY = this.getRightCorner().getY() - decreaseArea;
+
         // Список свободных клеток
         List<Position> freePositions = new ArrayList<>();
-        for (int x = this.getLeftCorner().getX() + 1; x < this.getRightCorner().getX(); x++) {
-            for (int y = this.getLeftCorner().getY() + 1; y < this.getRightCorner().getY(); y++) {
+        for (int x = leftX; x < rightX; x++) {
+            for (int y = leftY; y < rightY; y++) {
                 if (!occupied.contains(x + "," + y)) {
                     freePositions.add(new Position(x,y));
                 }
@@ -125,6 +131,10 @@ public class Room {
         }
 
         return freePositions.get(rndBetween(0,freePositions.size() - 1));
+    }
+
+    public Position getRandomFreePosition() {
+       return getRandomFreePosition(0);
     }
 
     // Гетеры, сеттеры
@@ -143,20 +153,28 @@ public class Room {
     }
 
     //Проверить что позиция внутри комнаты
-    private boolean isPositionInRoom(Position position) {
+    public boolean isPositionInRoom(Position position) {
         return position.getX() > leftCorner.getX() &&
                 position.getX() < rightCorner.getX() &&
                 position.getY() > leftCorner.getY() &&
                 position.getY() < rightCorner.getY();
     }
 
+    public boolean isPositionInDoor(Position position) {
+        for (Door door : doors) {
+            if (door != null && door.getPosition().equal(position))
+                return true;
+        }
+        return false;
+    }
+
     //Проверить что позиция не занята
     private boolean isPositionFree(Position position) {
-//        for (Entity entity : entities) {
-//            if (position.equal(entity.getPosition())) {
-//                return false;
-//            }
-//        }
+        for (Entity entity : entities) {
+            if (position.equal(entity.getPosition())) {
+                return false;
+            }
+        }
         return true;
     }
 
