@@ -28,10 +28,8 @@ public class Position {
         return Math.sqrt(dx*dx + dy*dy);
     }
 
-    public boolean equals(Position position) {
-        if (this == position) return true;
-        if (position == null) return false;
-        return x == position.x && y == position.y;
+    public boolean equal(Position position) {
+        return x == position.getX() && y == position.getY();
     }
 
     @Override

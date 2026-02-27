@@ -82,7 +82,11 @@ public class Player extends Character implements Entity {
         return oldWeapon;
     }
 
+    public int getScore() {
+        return score;
+    }
 
-
-
+    public void setScore(int score) {
+        this.score = score;
+    }
 }
