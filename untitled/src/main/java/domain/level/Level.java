@@ -63,7 +63,13 @@ public class Level {
         return stairsDown;
     }
 
-
+    /**
+     * Добавление происходит на уровень и в комнату
+     * <p>Проверяет позицию сущности, ее нахождение в комнате </p>
+     * @param entity
+     * @param roomNumber
+     * @return
+     */
     public boolean addEntity(Entity entity, int roomNumber) {
         if (roomNumber < 0 || roomNumber >= rooms.length) {
             return false;
@@ -126,6 +132,10 @@ public class Level {
         }
 
         return freePositions;
+    }
+
+    public Set<Entity> getAllEntities() {
+        return units.getAllEntities();
     }
     //    private static final int[][] ROOM_COORDS = {
 //            {0, 0, 22, 9},    // комната 1

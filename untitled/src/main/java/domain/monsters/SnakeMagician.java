@@ -7,9 +7,33 @@ import domain.player.Player;
 import java.util.Random;
 
 public class SnakeMagician extends Enemy {
+    //Базовые статы
+    private static final double BASE_HEALTH = 70;
+    private static final double BASE_STRENGTH = 10;
+    private static final double BASE_DEXTERITY = 30;
+    //Прирост базовых стат за уровень коэффициент (будет округляться из-за int)
+    private static final double HEALTH_GROWTH = 0.01;
+    private static final double STRENGTH_GROWTH = 0.03;
+    private static final double DEXTERITY_GROWTH = 0.02;
+
+    private static final int BASE_HOSTILITY = 10;
+    private static final int BASE_TREASURE = 125;
+
+    private static final Random random = new Random();
+    private static final double VARIATION = 0.1;
+
+    public SnakeMagician(int enemyLevel, Position position){
+        super(position, (int)(BASE_HEALTH * ((double) enemyLevel * HEALTH_GROWTH + 1.0) * (1 + random.nextDouble() * VARIATION - VARIATION/2)),
+                (int)(BASE_HEALTH * ((double) enemyLevel * HEALTH_GROWTH + 1.0) * (1 + random.nextDouble() * VARIATION - VARIATION/2)),
+                (int)(BASE_STRENGTH * ((double) enemyLevel * STRENGTH_GROWTH + 1.0) * (1 + random.nextDouble() * VARIATION - VARIATION/2)),
+                (int)(BASE_DEXTERITY * ((double) enemyLevel * DEXTERITY_GROWTH + 1.0) * (1 + random.nextDouble() * VARIATION - VARIATION/2)),
+                EnemyType.ZOMBIE, BASE_HOSTILITY, BASE_TREASURE);
+    }
+
     private boolean moveRight = true;
     private boolean moveDown = true;
-    private static final double SLEEP_CHANCE = 0.3;
+    private static final double SLEEP_CHANCE = 0.2;
+    private static final int SLEEP_DURATION = 1; // Количество ходов сна
 
     public SnakeMagician(Position position) {
         super(position, 70, 70, 12, 30,
@@ -68,10 +92,9 @@ public class SnakeMagician extends Enemy {
 
     @Override
     protected void applySpecialAttackEffects(Player player) {
-        // Шанс усыпить игрока
+        // Шанс усыпить игрока при успешной атаке
         if (Math.random() < SLEEP_CHANCE) {
-            // TODO: Implement sleep mechanism in Game class
-            System.out.println("Player is put to sleep for one turn!");
+            player.setSleepTurns(SLEEP_DURATION);
         }
     }
 

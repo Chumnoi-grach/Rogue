@@ -15,16 +15,16 @@ public class Food extends BaseItem{
 
     @Override
     public void apply(Player player) {
-        player.setHealth(Math.min(player.getCurrentHealth() + bonus, player.getCurrentHealth()));
+        player.setCurrentHealth(Math.min(player.getCurrentHealth() + bonus, player.getCurrentHealth()));
         System.out.printf("%s съел %s и увеличил текущее здоровье до %d\n",
-                player.getType(), name, player.getCurrentHealth()
+                player.getName(), name, player.getCurrentHealth()
         );
     }
 
-    @Override
-    public void setPosition(Position position) {
-        throw new UnsupportedOperationException("Еду нельзя переместить!");
-    }
+//    @Override
+//    public void setPosition(Position position) {
+//        throw new UnsupportedOperationException("Еду нельзя переместить!");
+//    }
 
     public ConsumableType getConsumableType() {
         return effectType;
@@ -38,5 +38,10 @@ public class Food extends BaseItem{
     public String toString() {
         return String.format("Еда '%s' (%s +%d) на %s",
                 name, effectType, bonus, position);
+    }
+
+    @Override
+    public char getDisplayChar() {
+        return '%';
     }
 }

@@ -64,7 +64,9 @@ public abstract class Enemy extends Character {
         int dx = player.getPosition().getX() - this.position.getX();
         int dy = player.getPosition().getY() - this.position.getY();
         // Пытаемся двигаться сначала по горизонтали, потом по вертикали
-        if (Math.abs(dx) <= 1 && Math.abs(dy) <= 1) {
+
+        //Атака доступна только влево, вправо, вверх, вниз
+        if ((Math.abs(dx) == 1 && Math.abs(dy) == 0) || (Math.abs(dx) == 0 && Math.abs(dy) == 1)) {
             attack(player);
         } else if (Math.abs(dx) > Math.abs(dy)) {
             this.position = this.position.translate(dXOne, 0);

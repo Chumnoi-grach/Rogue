@@ -7,7 +7,7 @@ import domain.Position;
 public abstract class BaseItem implements Backpackable, Entity {
     protected String name;
     protected ItemType type;
-    protected final Position position;
+    protected Position position;
 
     public BaseItem(String name, ItemType type, Position position) {
         this.name = name;
@@ -21,7 +21,7 @@ public abstract class BaseItem implements Backpackable, Entity {
 
     @Override
     public void setPosition(Position position) {
-        throw new UnsupportedOperationException("Нельзя переместить простой предмет!");
+        this.position = position;
     }
 
     @Override
@@ -41,4 +41,6 @@ public abstract class BaseItem implements Backpackable, Entity {
     public String toString() {
         return name;
     }
+
+    public abstract char getDisplayChar();
 }
