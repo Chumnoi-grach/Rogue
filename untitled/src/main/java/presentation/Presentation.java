@@ -155,12 +155,12 @@ public class Presentation {
         strLength += playerHP.length() + 3;
         putString(" | " , strLength , WINDOW_HEIGHT - 1, MENUBGROUND, COLORBGROUND);
 
-        String playerStrength = "Strength: " + game.getPlayer().getStrength() + "/" + game.getPlayer().getMaxStrength();
+        String playerStrength = "Strength: " + game.getPlayer().getStrength();
         putString(playerStrength, strLength + 3, WINDOW_HEIGHT - 1, TextColor.ANSI.GREEN_BRIGHT, COLORBGROUND);
         strLength += playerStrength.length() + 3;
         putString(" | " , strLength , WINDOW_HEIGHT - 1, MENUBGROUND, COLORBGROUND);
 
-        String playerAgility = "Agility: " + game.getPlayer().getDexterity() + "/" + game.getPlayer().getMaxDexterity();
+        String playerAgility = "Agility: " + game.getPlayer().getDexterity();
         putString(playerAgility, strLength + 3, WINDOW_HEIGHT - 1, TextColor.ANSI.CYAN, COLORBGROUND);
         strLength += playerAgility.length() + 3;
         putString(" | " , strLength , WINDOW_HEIGHT - 1, MENUBGROUND, COLORBGROUND);
@@ -186,29 +186,19 @@ public class Presentation {
             if (pos == null) continue;
 
             // Определяем символ и цвет для каждого типа сущности
-            if (entity instanceof Enemy) {
-                Enemy enemy = (Enemy) entity;
-                // Используем getDisplayChar() из Enemy
-                char symbol = enemy.getDisplayChar();
-                //TextColor color = getEnemyColor(enemy);
-                putCh(symbol, pos.getX(), pos.getY(), enemy.getDisplayColor(), COLORBGROUND);
-
-            } else if (entity instanceof BaseItem) {
             if (entity instanceof BaseItem) {
                 BaseItem item = (BaseItem) entity;
                 // Определяем символ для предмета
                 char symbol = item.getDisplayChar();
                 //TextColor color = getItemColor(item);
                 putCh(symbol, pos.getX(), pos.getY(), COLORITEM, COLORBGROUND);
-                putCh(symbol, pos.getX(), pos.getY(), COLORITEM, COLORBGROUND);
 
             } else if (entity instanceof Enemy) {
-
                 Enemy enemy = (Enemy) entity;
                 // Используем getDisplayChar() из Enemy
                 char symbol = enemy.getDisplayChar();
                 //TextColor color = getEnemyColor(enemy);
-                putCh(symbol, pos.getX(), pos.getY(), COLORENEMY, COLORBGROUND);
+                putCh(symbol, pos.getX(), pos.getY(), enemy.getDisplayColor(), COLORBGROUND);
             }
         }
     }

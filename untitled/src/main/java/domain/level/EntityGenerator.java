@@ -54,8 +54,6 @@ public class EntityGenerator {
                 return generateRandomScroll();
             case TREASURE:
                 return generateRandomTreasure();
-            case SCROLL:
-                return generateRandomScroll();
             default:
                 return generateRandomFood();
         }
@@ -126,46 +124,6 @@ public class EntityGenerator {
     }
 
     private static int calculatePotionBonus(ConsumableType type) {
-        switch (type) {
-            case HEALTH:
-                return random.nextInt(30) + 20; // 20-50 HP
-            case STRENGTH:
-                return random.nextInt(6) + 8;    // 8-14 силы
-            case DEXTERITY:
-                return random.nextInt(5) + 3;    // 3-8 ловкости
-            default:
-                return 5;
-        }
-    }
-
-    /**
-     * Генерирует случайный свиток
-     */
-    public static Scroll generateRandomScroll() {
-        ConsumableType effectType = ConsumableType.getRandom();
-        String name = generateScrollName(effectType);
-        int bonus = calculateScrollBonus(effectType);
-        int duration = random.nextInt(5) + 6; // 6-11 ходов
-
-        return new Scroll(name, bonus, effectType, null);
-    }
-
-    private static String generateScrollName(ConsumableType type) {
-        String[] prefixesForHeal = {"Военно-полевая хирургия", "О вреде курения", "Правильное питание"};
-        String[] prefixesForStrength = {"Правильная становая тяга", "Техника в жиме лежа", "О пользе Креатинина"};
-        String[] prefixesForDexterity = {"Ниндзя в тапках", "Сальто с дивана", "Цирковой блох", "Лагнул, но выжил"};
-        String prefix;
-        if (type.equals(ConsumableType.HEALTH)) {
-            prefix = prefixesForHeal[random.nextInt(prefixesForHeal.length)];
-        }else if (type.equals(ConsumableType.STRENGTH)) {
-            prefix = prefixesForStrength[random.nextInt(prefixesForStrength.length)];
-        }else{
-            prefix = prefixesForDexterity[random.nextInt(prefixesForDexterity.length)];
-        }
-        return "Свиток " + type.getDisplayName() + " " + prefix;
-    }
-
-    private static int calculateScrollBonus(ConsumableType type) {
         switch (type) {
             case HEALTH:
                 return random.nextInt(30) + 20; // 20-50 HP

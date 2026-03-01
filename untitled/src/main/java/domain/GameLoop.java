@@ -160,18 +160,26 @@ public class GameLoop {
             switch (c) {
                 case 'W':
                 case 'w':
+                case 'Ц':
+                case 'ц':
                     currentGame.moveUp();
                     return;
                 case 'S':
                 case 's':
+                case 'Ы':
+                case 'ы':
                     currentGame.moveDown();
                     return;
                 case 'A':
                 case 'a':
+                case 'Ф':
+                case 'ф':
                     currentGame.moveLeft();
                     return;
                 case 'D':
                 case 'd':
+                case 'В':
+                case 'в':
                     currentGame.moveRight();
                     return;
                 case 'p':

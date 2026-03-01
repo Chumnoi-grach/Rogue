@@ -6,9 +6,7 @@ import java.util.List;
 
 public abstract class Character implements Entity{
     protected int strength;             // сила
-    protected int maxStrength;             // сила
     protected int dexterity;            // ловкость
-    protected int maxDexterity;            // ловкость
     protected int maxHealth;            // максимальное здоровье
     protected int health;        // текущее здоровье
     protected Position position;        // текущая позиция
@@ -19,17 +17,13 @@ public abstract class Character implements Entity{
         this.health = health;
         this.maxHealth = maxHealth;
         this.strength = strength;
-        this.maxStrength = strength;
         this.dexterity = dexterity;
-        this.maxDexterity = dexterity;
     }
 
     // Геттеры
     public int getStrength() {return strength;}
-    public int getMaxStrength() {return maxStrength;}
 
     public int getDexterity() {return dexterity;}
-    public int getMaxDexterity() {return maxDexterity;}
 
     public int getMaxHealth() {return maxHealth;}
 
@@ -54,14 +48,8 @@ public abstract class Character implements Entity{
     public void setStrength(int value) {
         this.strength = value;
     }
-    public void setMaxStrength(int value) {
-        this.maxStrength = value;
-    }
     public void setDexterity(int value) {
         this.dexterity = value;
-    }
-    public void setMaxDexterity(int value) {
-        this.maxDexterity = value;
     }
 
     @Override

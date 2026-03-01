@@ -8,7 +8,7 @@ public class Food extends BaseItem{
     private final int bonus;         // На сколько повышает характеристику
 
     public Food(String name, int bonus, Position position) {
-        super(name, ItemType.SCROLL, position);
+        super(name, ItemType.FOOD, position);
         this.effectType = ConsumableType.HEALTH;
         this.bonus = bonus;
     }

@@ -25,11 +25,11 @@ public class Scroll extends BaseItem implements Entity, Backpackable {
                 player.setMaxHealth(player.getMaxHealth() + bonus);
                 break;
             case STRENGTH:
-                player.setMaxStrength(player.getStrength() + bonus);
+                player.setStrength(player.getStrength() + bonus);
                 System.out.println(name + " увеличивает силу на " + bonus + "!");
                 break;
             case DEXTERITY:
-                player.setMaxDexterity(player.getDexterity() + bonus);
+                player.setDexterity(player.getDexterity() + bonus);
                 System.out.println(name + " увеличивает ловкость на " + bonus + "!");
                 break;
         }
