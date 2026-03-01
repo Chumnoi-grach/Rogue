@@ -1,9 +1,7 @@
 package domain;
 
-import domain.level.Corridor;
-import domain.level.Generation;
-import domain.level.Level;
-import domain.level.Room;
+import domain.items.Potion;
+import domain.level.*;
 import domain.player.Player;
 import domain.monsters.*;
 
@@ -20,6 +18,23 @@ public class Game {
         this.player = new Player(name, new Position(0, 0));
         // генерируем первый уровень
         generateLevel(1);
+
+        for (int i = 0; i < 9; i++) {
+            player.getBackpack().addItem(EntityGenerator.generateRandomFood());
+        }
+
+        for (int i = 0; i < 9; i++) {
+            player.getBackpack().addItem(EntityGenerator.generateRandomWeapon());
+        }
+
+        for (int i = 0; i < 9; i++) {
+            player.getBackpack().addItem(EntityGenerator.generateRandomPotion());
+        }
+
+        for (int i = 0; i < 9; i++) {
+            player.getBackpack().addItem(EntityGenerator.generateRandomScroll());
+        }
+
     }
 
 

@@ -8,16 +8,16 @@ public class Food extends BaseItem{
     private final int bonus;         // На сколько повышает характеристику
 
     public Food(String name, int bonus, Position position) {
-        super(name, ItemType.SCROLL, position);
+        super(name, ItemType.FOOD, position);
         this.effectType = ConsumableType.HEALTH;
         this.bonus = bonus;
     }
 
     @Override
     public void apply(Player player) {
-        player.setCurrentHealth(Math.min(player.getCurrentHealth() + bonus, player.getCurrentHealth()));
+        player.setHealth(Math.min(player.getHealth() + bonus, player.getHealth()));
         System.out.printf("%s съел %s и увеличил текущее здоровье до %d\n",
-                player.getName(), name, player.getCurrentHealth()
+                player.getName(), name, player.getHealth()
         );
     }
 

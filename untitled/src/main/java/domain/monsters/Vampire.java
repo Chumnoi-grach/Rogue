@@ -1,5 +1,6 @@
 package domain.monsters;
 
+import com.googlecode.lanterna.TextColor;
 import domain.Position;
 import domain.level.Room;
 import domain.player.Player;
@@ -162,5 +163,9 @@ public class Vampire extends Enemy {
     @Override
     public char getDisplayChar() {
         return 'v';
+    }
+    @Override
+    public TextColor getDisplayColor() {
+        return TextColor.ANSI.RED;
     }
 }

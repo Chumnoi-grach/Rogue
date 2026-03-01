@@ -50,10 +50,10 @@ public class EntityGenerator {
                 return generateRandomPotion();
             case FOOD:
                 return generateRandomFood();
-            case TREASURE:
-                return generateRandomTreasure();
             case SCROLL:
                 return generateRandomScroll();
+            case TREASURE:
+                return generateRandomTreasure();
             default:
                 return generateRandomFood();
         }
