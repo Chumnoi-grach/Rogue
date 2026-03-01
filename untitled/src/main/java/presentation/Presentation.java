@@ -185,14 +185,14 @@ public class Presentation {
                 // Используем getDisplayChar() из Enemy
                 char symbol = enemy.getDisplayChar();
                 //TextColor color = getEnemyColor(enemy);
-                putCh(symbol, pos.getX(), pos.getY(), COLORENEMY);
+                putCh(symbol, pos.getX(), pos.getY(), COLORENEMY, COLORBGROUND);
 
             } else if (entity instanceof BaseItem) {
                 BaseItem item = (BaseItem) entity;
                 // Определяем символ для предмета
                 char symbol = item.getDisplayChar();
                 //TextColor color = getItemColor(item);
-                putCh(symbol, pos.getX(), pos.getY(), COLORITEM);
+                putCh(symbol, pos.getX(), pos.getY(), COLORITEM, COLORBGROUND);
             }
         }
     }
