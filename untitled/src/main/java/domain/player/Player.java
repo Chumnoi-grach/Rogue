@@ -97,6 +97,9 @@ public class Player extends Character implements Entity {
         return oldWeapon;
     }
 
+    public int getScore() {
+        return score;
+    }
     public String getName() {
         return name;
     }
@@ -121,6 +124,9 @@ public class Player extends Character implements Entity {
         return sleepTurns > 0;
     }
 
+    public void setScore(int score) {
+        this.score = score;
+    }
     /**
      * Обработка хода игрока
      * @return true если игрок может действовать, false если спит

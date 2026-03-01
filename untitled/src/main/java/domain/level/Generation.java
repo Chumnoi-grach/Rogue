@@ -71,7 +71,6 @@ public class Generation {
         List<Corridor> corridors = genCorridors(rooms);
 
         // 3. Создаем уровень
-//        Level level = new Level(levelNumber, rooms, corridors);
         Level level = new Level(levelNumber, rooms, corridors);
 
         //Определить стартовую и конечные комнаты.
@@ -81,8 +80,7 @@ public class Generation {
         int endRoom = getRoomAtDistance(startRoom, roomGraph.getConnections());
         level.setStartRoom(startRoom);
         level.setEndRoom(endRoom);
-        level.setStairsDown(level.getRoom(endRoom).getRandomFreePosition());
-
+        level.setStairsDown(level.getRoom(endRoom).getRandomFreePosition(1));
 
         // 4. Размещаем сущности
         populateLevel(level, levelNumber);
@@ -256,7 +254,7 @@ public class Generation {
             //Двери на разных уровнях, создаем коридор с поворотом.
             int cornerX = Room.rndBetween(leftX, rightX);
             corridors.add(new Corridor( new Position(leftX, leftY), new Position(cornerX, leftY)));
-            corridors.add(new Corridor( new Position(cornerX, leftY), new Position(cornerX, rightY)));
+            corridors.add(new Corridor( new Position(cornerX, Math.min(leftY, rightY)), new Position(cornerX, Math.max(leftY, rightY) )));
             corridors.add(new Corridor( new Position(cornerX, rightY), new Position(rightX, rightY)));
         }
     }
@@ -273,7 +271,7 @@ public class Generation {
             //Двери на разных X, создаем коридор с поворотом.
             int cornerY = Room.rndBetween(bottomY, upperY);
             corridors.add(new Corridor( new Position(bottomX, bottomY), new Position(bottomX, cornerY)));
-            corridors.add(new Corridor( new Position(bottomX, cornerY), new Position(upperX, cornerY)));
+            corridors.add(new Corridor( new Position(Math.min(upperX, bottomX), cornerY), new Position(Math.max(upperX, bottomX), cornerY)));
             corridors.add(new Corridor( new Position(upperX, cornerY), new Position(upperX, upperY)));
         }
     }
