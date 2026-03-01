@@ -8,6 +8,29 @@ import domain.player.Player;
 import java.util.Random;
 
 public class Ogre extends Enemy {
+    //Базовые статы
+    private static final double BASE_HEALTH = 100;
+    private static final double BASE_STRENGTH = 20;
+    private static final double BASE_DEXTERITY = 3;
+    //Прирост базовых стат за уровень коэффициент (будет округляться из-за int)
+    private static final double HEALTH_GROWTH = 0.09;
+    private static final double STRENGTH_GROWTH = 0.04;
+    private static final double DEXTERITY_GROWTH = 0.00;
+
+    private static final int BASE_HOSTILITY = 10;
+    private static final int BASE_TREASURE = 150;
+
+    private static final Random random = new Random();
+    private static final double VARIATION = 0.1;
+
+    public Ogre(int enemyLevel, Position position){
+        super(position, (int)(BASE_HEALTH * ((double) enemyLevel * HEALTH_GROWTH + 1.0) * (1 + random.nextDouble() * VARIATION - VARIATION/2)),
+                (int)(BASE_HEALTH * ((double) enemyLevel * HEALTH_GROWTH + 1.0) * (1 + random.nextDouble() * VARIATION - VARIATION/2)),
+                (int)(BASE_STRENGTH * ((double) enemyLevel * STRENGTH_GROWTH + 1.0) * (1 + random.nextDouble() * VARIATION - VARIATION/2)),
+                (int)(BASE_DEXTERITY * ((double) enemyLevel * DEXTERITY_GROWTH + 1.0) * (1 + random.nextDouble() * VARIATION - VARIATION/2)),
+                EnemyType.ZOMBIE, BASE_HOSTILITY, BASE_TREASURE);
+    }
+
     private boolean resting = false;
     private int moveCounter = 0;
     private static final int MOVE_STEP = 2;
@@ -78,18 +101,21 @@ public class Ogre extends Enemy {
         int dx = player.getPosition().getX() - this.position.getX();
         int dy = player.getPosition().getY() - this.position.getY();
         // Пытаемся двигаться сначала по горизонтали, потом по вертикали
+        //boolean wasAttackInStep = false;
         while (moveCounter < MOVE_STEP){
-            boolean wasAttackInStep = false;
-            if (Math.abs(dx) <= 1 && Math.abs(dy) <= 1 && !wasAttackInStep) {
+            if (Math.abs(dx) <= 1 && Math.abs(dy) <= 1) {
                 if (!resting) attack(player);
                 resting = !resting;
-                wasAttackInStep = !wasAttackInStep;
+                moveCounter += 2;
             } else if (Math.abs(dx) > Math.abs(dy)) {
                 this.position = this.position.translate(dXOne, 0);
+                moveCounter++;
             } else {
                 this.position = this.position.translate(0, dYOne);
+                moveCounter++;
             }
         }
+        moveCounter = 0;
     }
 
     @Override

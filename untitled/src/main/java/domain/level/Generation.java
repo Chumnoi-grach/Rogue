@@ -107,10 +107,10 @@ public class Generation {
             int positionIndex = 0;
             Room room = level.getRoom(roomNum);
 
-            // Генерируем врага (50% шанс) если можно добавить и есть свободные позиции
-            int chanceToGenerateEnemy = random.nextInt(10); // 0-3
+            // Генерируем врага (70% шанс) если можно добавить и есть свободные позиции
+            int chanceToGenerateEnemy = random.nextInt(10); //70 %
             if (chanceToGenerateEnemy > 2 && room.canAddEnemy() && positionIndex < freePositions.size()) {
-                Enemy enemy = EntityGenerator.generateRandomEnemy();
+                Enemy enemy = EntityGenerator.generateEnemyForLevel(level.getLevelNumber());
                 enemy.setPosition(freePositions.get(positionIndex));
 
                 // Добавляем через Level, который синхронизирует с Room и units
@@ -133,29 +133,29 @@ public class Generation {
         }
     }
 
-    public BaseItem generateRandomItem(int level){
-        ItemType itemTipe = ItemType.getRandomItem();
-        if (itemTipe.equals(ItemType.FOOD) {
-            return new Food("Bread", );
-        }
-    }
-
-    public Enemy generateRandomEnemy(int level, Position position){
-        List<String> list = Arrays.asList("Ghost", "Ogre", "SnakeMagician", "Vampire", "Zombie");
-        Random rand = new Random();
-
-        String randomEnemyType = list.get(rand.nextInt(list.size()));
-        return new Enemy("Lary", randomEnemyType, level, position);
-        if (randomEnemyType.equals("Zombie")) {
-            return new Zombie("Lary", level, position);
-        }else if (randomEnemyType.equals("Ghost")) {
-            return new Ghost("Lary", level, position);
-        }else if (randomEnemyType.equals("Ogre")) {
-            return new Ogre("Lary", level, position);
-        }else if (randomEnemyType.equals("Ghost")) {
-            return new Ghost("Lary", level, position);
-        }
-    }
+//    public BaseItem generateRandomItem(int level){
+//        ItemType itemTipe = ItemType.getRandomItem();
+//        if (itemTipe.equals(ItemType.FOOD) {
+//            return new Food("Bread", );
+//        }
+//    }
+//
+//    public Enemy generateRandomEnemy(int level, Position position){
+//        List<String> list = Arrays.asList("Ghost", "Ogre", "SnakeMagician", "Vampire", "Zombie");
+//        Random rand = new Random();
+//
+//        String randomEnemyType = list.get(rand.nextInt(list.size()));
+//        return new Enemy("Lary", randomEnemyType, level, position);
+//        if (randomEnemyType.equals("Zombie")) {
+//            return new Zombie("Lary", level, position);
+//        }else if (randomEnemyType.equals("Ghost")) {
+//            return new Ghost("Lary", level, position);
+//        }else if (randomEnemyType.equals("Ogre")) {
+//            return new Ogre("Lary", level, position);
+//        }else if (randomEnemyType.equals("Ghost")) {
+//            return new Ghost("Lary", level, position);
+//        }
+//    }
 
     //Enemy: [z, g, z]
     //for x in l:

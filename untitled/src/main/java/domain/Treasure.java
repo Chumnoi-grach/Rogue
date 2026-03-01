@@ -19,4 +19,8 @@ public class Treasure extends BaseItem {
     public int getValue(){
         return value;
     }
+    @Override
+    public char getDisplayChar() {
+        return '*';
+    }
 }

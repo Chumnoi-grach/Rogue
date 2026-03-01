@@ -17,6 +17,11 @@ public class LevelUnits {
         return entities.add(entity);
     }
 
+    /**
+     * Доработать удаление из комнаты возможно
+     * @param entity
+     * @return
+     */
     public boolean deleteEntity(Entity entity) {
         return entities.remove(entity);
     }
@@ -61,5 +66,8 @@ public class LevelUnits {
             System.out.printf("\t" + entity + "\n");
         }
         System.out.println("=============================");
+    }
+    public Set<Entity> getAllEntities() {
+        return new HashSet<>(entities);
     }
 }

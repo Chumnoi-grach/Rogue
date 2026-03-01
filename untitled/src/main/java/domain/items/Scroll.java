@@ -20,7 +20,7 @@ public class Scroll extends BaseItem implements Entity, Backpackable {
             case HEALTH:
                 //здесь потом заменить вывод сообщения под статусную строку
                 System.out.printf("%s зачитал %s и увеличил максимальное здоровье до %d\n",
-                        player.getType(), name, player.getMaxHealth() + bonus
+                        player.getName(), name, player.getMaxHealth() + bonus
                 );
                 player.setMaxHealth(player.getMaxHealth() + bonus);
                 break;
@@ -35,10 +35,10 @@ public class Scroll extends BaseItem implements Entity, Backpackable {
         }
     }
 
-    @Override
-    public void setPosition(Position position) {
-        throw new UnsupportedOperationException("Свиток нельзя переместить!");
-    }
+//    @Override
+//    public void setPosition(Position position) {
+//        throw new UnsupportedOperationException("Свиток нельзя переместить!");
+//    }
 
     public ConsumableType getConsumableType() {
         return effectType;
@@ -54,5 +54,9 @@ public class Scroll extends BaseItem implements Entity, Backpackable {
                 name, type, bonus, position);
     }
 
+    @Override
+    public char getDisplayChar() {
+        return '~';
+    }
 
 }

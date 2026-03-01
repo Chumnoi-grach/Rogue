@@ -10,17 +10,21 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.terminal.swing.SwingTerminalFontConfiguration;
 import com.googlecode.lanterna.terminal.swing.SwingTerminalFrame;
+import domain.Entity;
 import domain.Game;
 import domain.Position;
+import domain.items.BaseItem;
 import domain.level.Corridor;
 import domain.level.Door;
 import domain.level.Level;
 import domain.level.Room;
+import domain.monsters.Enemy;
 import domain.player.Player;
 
 import java.awt.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 public class Presentation {
     private static final int ROOM_COUNT = 9;
@@ -32,6 +36,8 @@ public class Presentation {
 
     private static final TextColor COLORBGROUND = TextColor.ANSI.BLACK;
     private static final TextColor COLORPLAYER = TextColor.ANSI.WHITE;
+    private static final TextColor COLORENEMY = TextColor.ANSI.RED_BRIGHT;
+    private static final TextColor COLORITEM = TextColor.ANSI.GREEN;
     private static final TextColor COLORBOUND = TextColor.ANSI.YELLOW;
     private static final TextColor COLORDOOR = TextColor.ANSI.YELLOW_BRIGHT;
     private static final TextColor COLORPASSAGE = TextColor.Factory.fromString("#555555");
@@ -122,6 +128,9 @@ public class Presentation {
 
         // ПЕЧАТЬ СУЩНОСТЕЙ
 
+        printAllEntities(game.getCurrentLevel());
+        // ИГРОКА
+
         printStatusBar(game);                                   // Печать строки состояния
         printPlayer(game.getPlayer());                          // Печать игрока
 
@@ -158,6 +167,34 @@ public class Presentation {
     private void printPlayer(Player player) throws IOException {
         if (player != null)
             putCh(PLAYER.charAt(0), player.getPosition().getX(), player.getPosition().getY(), COLORPLAYER, COLORBGROUND);
+    }
+
+    private void printAllEntities(Level level) throws IOException {
+        Set<Entity> allEntities = level.getAllEntities();
+
+        for (Entity entity : allEntities) {
+            // Пропускаем игрока (его отображаем отдельно)
+            if (entity instanceof Player) continue;
+
+            Position pos = entity.getPosition();
+            if (pos == null) continue;
+
+            // Определяем символ и цвет для каждого типа сущности
+            if (entity instanceof Enemy) {
+                Enemy enemy = (Enemy) entity;
+                // Используем getDisplayChar() из Enemy
+                char symbol = enemy.getDisplayChar();
+                //TextColor color = getEnemyColor(enemy);
+                putCh(symbol, pos.getX(), pos.getY(), COLORENEMY);
+
+            } else if (entity instanceof BaseItem) {
+                BaseItem item = (BaseItem) entity;
+                // Определяем символ для предмета
+                char symbol = item.getDisplayChar();
+                //TextColor color = getItemColor(item);
+                putCh(symbol, pos.getX(), pos.getY(), COLORITEM);
+            }
+        }
     }
 
     private void printCorridors(Level currentLevel) throws IOException {
