@@ -35,6 +35,8 @@ public class Presentation {
     private final Screen screen;
 
     private static final TextColor COLORBGROUND = TextColor.ANSI.BLACK;
+    private static final TextColor COLORPLAYER = TextColor.ANSI.WHITE;
+    private static final TextColor COLORENEMY = TextColor.ANSI.RED_BRIGHT;
     private static final TextColor COLORITEM = TextColor.ANSI.GREEN;
     private static final TextColor COLORBOUND = TextColor.ANSI.YELLOW;
     private static final TextColor COLORDOOR = TextColor.ANSI.YELLOW_BRIGHT;
@@ -50,6 +52,7 @@ public class Presentation {
     private static final String VERTDOOR = "┃";
     private static final String PASSAGE = "░";
     private static final String ROOMFLOOR = ".";
+    private static final String PLAYER = "@";
     private static final String STAIRSDOWN = "#";
 
     private final int MENU_WIDTH = 20;
@@ -191,11 +194,21 @@ public class Presentation {
                 putCh(symbol, pos.getX(), pos.getY(), enemy.getDisplayColor(), COLORBGROUND);
 
             } else if (entity instanceof BaseItem) {
+            if (entity instanceof BaseItem) {
                 BaseItem item = (BaseItem) entity;
                 // Определяем символ для предмета
                 char symbol = item.getDisplayChar();
                 //TextColor color = getItemColor(item);
                 putCh(symbol, pos.getX(), pos.getY(), COLORITEM, COLORBGROUND);
+                putCh(symbol, pos.getX(), pos.getY(), COLORITEM, COLORBGROUND);
+
+            } else if (entity instanceof Enemy) {
+
+                Enemy enemy = (Enemy) entity;
+                // Используем getDisplayChar() из Enemy
+                char symbol = enemy.getDisplayChar();
+                //TextColor color = getEnemyColor(enemy);
+                putCh(symbol, pos.getX(), pos.getY(), COLORENEMY, COLORBGROUND);
             }
         }
     }

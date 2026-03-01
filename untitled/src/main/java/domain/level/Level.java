@@ -57,6 +57,7 @@ public class Level {
 
     public void setStairsDown(Position stairsDown) {
         this.stairsDown = stairsDown;
+
     }
 
     public Position getStairsDown() {

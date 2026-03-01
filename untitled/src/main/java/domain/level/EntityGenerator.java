@@ -54,6 +54,8 @@ public class EntityGenerator {
                 return generateRandomScroll();
             case TREASURE:
                 return generateRandomTreasure();
+            case SCROLL:
+                return generateRandomScroll();
             default:
                 return generateRandomFood();
         }
@@ -199,6 +201,50 @@ public class EntityGenerator {
         int value = random.nextInt(100) + 10; // 10-110 золота
 
         return new Treasure(name, value, null);
+    }
+    /**
+     * Генерирует случайный свиток
+     */
+    public static Scroll generateRandomScroll() {
+        ConsumableType effectType = ConsumableType.getRandom();
+        String name = generateScrollName(effectType);
+        int bonus = calculateScrollBonus(effectType);
+
+        return new Scroll(name, bonus, effectType, null);
+    }
+
+    private static String generateScrollName(ConsumableType type) {
+        String[] prefixesForHeal = {"Исцеление", "Здоровье", "Жизненная сила", "Регенерация"};
+        String[] prefixesForStrength = {"Мощь", "Сила", "Гроза", "Разрушение"};
+        String[] prefixesForDexterity = {"Ловкость", "Проворство", "Гибкость", "Уклонение"};
+
+        String[] suffixes = {"древних", "мага", "героя", "великана", "дракона"};
+
+        String prefix;
+        if (type.equals(ConsumableType.HEALTH)) {
+            prefix = prefixesForHeal[random.nextInt(prefixesForHeal.length)];
+        } else if (type.equals(ConsumableType.STRENGTH)) {
+            prefix = prefixesForStrength[random.nextInt(prefixesForStrength.length)];
+        } else {
+            prefix = prefixesForDexterity[random.nextInt(prefixesForDexterity.length)];
+        }
+
+        String suffix = suffixes[random.nextInt(suffixes.length)];
+
+        return "Свиток " + type.getDisplayName() + " \"" + prefix + " " + suffix + "\"";
+    }
+
+    private static int calculateScrollBonus(ConsumableType type) {
+        switch (type) {
+            case HEALTH:
+                return random.nextInt(20) + 5; // 5-25 HP
+            case STRENGTH:
+                return random.nextInt(4) + 3;    // 3-7 силы
+            case DEXTERITY:
+                return random.nextInt(4) + 3;    // 3-7 ловкости (постоянно)
+            default:
+                return 5;
+        }
     }
 
     // ========== ГЕНЕРАЦИЯ С УЧЁТОМ УРОВНЯ ==========
