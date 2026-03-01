@@ -83,13 +83,14 @@ public class Generation {
         level.setStairsDown(level.getRoom(endRoom).getRandomFreePosition(1));
 
         // 4. Размещаем сущности
-        populateLevel(level, levelNumber);
+        populateLevel(level, startRoom);
 
         return level;
     }
 
     private void populateLevel(Level level, int startRoom) {
         Random random = new Random();
+        Position stairsDown = level.getStairsDown(); // получаем позицию лестницы
 
         for (int roomNum = 0; roomNum < ROOM_COUNT; roomNum++) {
             // Пропускаем стартовую комнату
@@ -101,15 +102,21 @@ public class Generation {
             // Если нет свободных позиций, пропускаем комнату
             if (freePositions.isEmpty()) continue;
 
+            if (stairsDown != null && level.getRoom(roomNum).isPositionInRoom(stairsDown)) {
+                freePositions.removeIf(pos -> pos.equal(stairsDown));
+            }
+
+            // Если после удаления лестницы не осталось свободных позиций, пропускаем комнату
+            if (freePositions.isEmpty()) continue;
             // Перемешиваем для случайного выбора
             Collections.shuffle(freePositions);
 
             int positionIndex = 0;
             Room room = level.getRoom(roomNum);
 
-            // Генерируем врага (70% шанс) если можно добавить и есть свободные позиции
-            int chanceToGenerateEnemy = random.nextInt(10); //70 %
-            if (chanceToGenerateEnemy > 2 && room.canAddEnemy() && positionIndex < freePositions.size()) {
+            // Генерируем врага (80% шанс) если можно добавить и есть свободные позиции
+            int chanceToGenerateEnemy = random.nextInt(10); //80 %
+            if (chanceToGenerateEnemy > 1 && room.canAddEnemy() && positionIndex < freePositions.size()) {
                 Enemy enemy = EntityGenerator.generateEnemyForLevel(level.getLevelNumber());
                 enemy.setPosition(freePositions.get(positionIndex));
 
@@ -120,7 +127,7 @@ public class Generation {
             }
 
             // Генерируем предметы (0-3 предмета)
-            int itemsToGenerate = random.nextInt(4); // 0-3
+            int itemsToGenerate = random.nextInt(1, 4); // 1-3
             for (int i = 0; i < itemsToGenerate && room.canAddItem() && positionIndex < freePositions.size(); i++) {
                 BaseItem item = EntityGenerator.generateRandomItem();
                 item.setPosition(freePositions.get(positionIndex));
