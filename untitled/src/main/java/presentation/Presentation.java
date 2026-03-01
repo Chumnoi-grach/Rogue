@@ -180,19 +180,20 @@ public class Presentation {
             if (pos == null) continue;
 
             // Определяем символ и цвет для каждого типа сущности
-            if (entity instanceof Enemy) {
-                Enemy enemy = (Enemy) entity;
-                // Используем getDisplayChar() из Enemy
-                char symbol = enemy.getDisplayChar();
-                //TextColor color = getEnemyColor(enemy);
-                putCh(symbol, pos.getX(), pos.getY(), COLORENEMY);
-
-            } else if (entity instanceof BaseItem) {
+            if (entity instanceof BaseItem) {
                 BaseItem item = (BaseItem) entity;
                 // Определяем символ для предмета
                 char symbol = item.getDisplayChar();
                 //TextColor color = getItemColor(item);
-                putCh(symbol, pos.getX(), pos.getY(), COLORITEM);
+                putCh(symbol, pos.getX(), pos.getY(), COLORITEM, COLORBGROUND);
+
+            } else if (entity instanceof Enemy) {
+
+                Enemy enemy = (Enemy) entity;
+                // Используем getDisplayChar() из Enemy
+                char symbol = enemy.getDisplayChar();
+                //TextColor color = getEnemyColor(enemy);
+                putCh(symbol, pos.getX(), pos.getY(), COLORENEMY, COLORBGROUND);
             }
         }
     }
