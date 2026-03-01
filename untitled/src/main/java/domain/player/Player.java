@@ -1,5 +1,6 @@
 package domain.player;
 
+import com.googlecode.lanterna.TextColor;
 import domain.Position;
 import domain.Treasure;
 import domain.items.*;
@@ -104,6 +105,8 @@ public class Player extends Character implements Entity {
         return name;
     }
 
+    public Backpack getBackpack() {return backpack; }
+
     public void setSleepTurns(int turns) {
         if (turns > 0) {
             this.sleepTurns = turns;
@@ -162,7 +165,7 @@ public class Player extends Character implements Entity {
             case HEALTH:
                 // Для здоровья увеличиваем текущее и максимальное
                 setMaxHealth(getMaxHealth() + effect.getBonus());
-                setCurrentHealth(getCurrentHealth() + effect.getBonus());
+                setHealth(getHealth() + effect.getBonus());
                 break;
             case STRENGTH:
                 setStrength(getStrength() + effect.getBonus());
@@ -177,7 +180,7 @@ public class Player extends Character implements Entity {
         switch (effect.getType()) {
             case HEALTH:
                 setMaxHealth(Math.max(getMaxHealth() - effect.getBonus(), 1));
-                setCurrentHealth(Math.max(getCurrentHealth() - effect.getBonus(), 1));
+                setHealth(Math.max(getHealth() - effect.getBonus(), 1));
                 break;
             case STRENGTH:
                 setStrength(Math.max(getStrength() - effect.getBonus(), 1));
@@ -207,28 +210,12 @@ public class Player extends Character implements Entity {
         return new ArrayList<>(activeEffects);
     }
 
-
-    // ========== ПЕРЕДВИЖЕНИЕ ==========
-//    public void move(int dx, int dy) {
-//        if (dx == 0 && dy == 0) return;
-//
-//        Position newPos = position.translate(dx, dy);
-//        setPosition(newPos);
-//    }
-//
-//    public boolean canMoveTo(Room currentRoom, Position newPos) {
-//        // Проверяем, в комнате ли новая позиция
-//        if (!currentRoom.isPositionInRoom(newPos)) {
-//            return false;
-//        }
-//
-//        // TODO: Добавить проверку на стены, других существ и т.д.
-//
-//        return true;
-//    }
-
     @Override
     public char getDisplayChar() {
         return '@';
+    }
+    @Override
+    public TextColor getDisplayColor() {
+        return TextColor.ANSI.WHITE;
     }
 }

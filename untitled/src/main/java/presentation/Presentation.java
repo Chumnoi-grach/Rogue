@@ -35,8 +35,6 @@ public class Presentation {
     private final Screen screen;
 
     private static final TextColor COLORBGROUND = TextColor.ANSI.BLACK;
-    private static final TextColor COLORPLAYER = TextColor.ANSI.WHITE;
-    private static final TextColor COLORENEMY = TextColor.ANSI.RED_BRIGHT;
     private static final TextColor COLORITEM = TextColor.ANSI.GREEN;
     private static final TextColor COLORBOUND = TextColor.ANSI.YELLOW;
     private static final TextColor COLORDOOR = TextColor.ANSI.YELLOW_BRIGHT;
@@ -52,7 +50,6 @@ public class Presentation {
     private static final String VERTDOOR = "┃";
     private static final String PASSAGE = "░";
     private static final String ROOMFLOOR = ".";
-    private static final String PLAYER = "@";
     private static final String STAIRSDOWN = "#";
 
     private final int MENU_WIDTH = 20;
@@ -139,22 +136,28 @@ public class Presentation {
     private void printStatusBar(Game game) throws IOException {
         //печать строки состояния
         // Level: 2  |  HP: 10(45)  |  Strength: 22(22)  |  Agility: 15  |  Gold: 33
-        String levelStr = "Level " + game.getCurrentLevel().getLevelNumber();
-        putString(levelStr, 1, WINDOW_HEIGHT - 1, MENUBGROUND, COLORBGROUND);
-        int strLength = 1 + levelStr.length();
+
+        String nameStr = game.getPlayer().getName();
+        putString(nameStr, 15, WINDOW_HEIGHT - 1, TextColor.ANSI.WHITE, COLORBGROUND);
+        int strLength = 15 + nameStr.length();
         putString(" | " , strLength , WINDOW_HEIGHT - 1, MENUBGROUND, COLORBGROUND);
 
-        String playerHP = "HP: " + game.getPlayer().getCurrentHealth() + "/" + game.getPlayer().getMaxHealth();
+        String levelStr = "Level " + game.getCurrentLevel().getLevelNumber();
+        putString(levelStr, strLength + 3, WINDOW_HEIGHT - 1, MENUBGROUND, COLORBGROUND);
+        strLength += levelStr.length() + 3;
+        putString(" | " , strLength , WINDOW_HEIGHT - 1, MENUBGROUND, COLORBGROUND);
+
+        String playerHP = "HP: " + game.getPlayer().getHealth() + "/" + game.getPlayer().getMaxHealth();
         putString(playerHP, strLength + 3, WINDOW_HEIGHT - 1, TextColor.ANSI.RED_BRIGHT, COLORBGROUND);
         strLength += playerHP.length() + 3;
         putString(" | " , strLength , WINDOW_HEIGHT - 1, MENUBGROUND, COLORBGROUND);
 
-        String playerStrength = "Strength: " + game.getPlayer().getStrength();
+        String playerStrength = "Strength: " + game.getPlayer().getStrength() + "/" + game.getPlayer().getMaxStrength();
         putString(playerStrength, strLength + 3, WINDOW_HEIGHT - 1, TextColor.ANSI.GREEN_BRIGHT, COLORBGROUND);
         strLength += playerStrength.length() + 3;
         putString(" | " , strLength , WINDOW_HEIGHT - 1, MENUBGROUND, COLORBGROUND);
 
-        String playerAgility = "Agility: " + game.getPlayer().getDexterity();
+        String playerAgility = "Agility: " + game.getPlayer().getDexterity() + "/" + game.getPlayer().getMaxDexterity();
         putString(playerAgility, strLength + 3, WINDOW_HEIGHT - 1, TextColor.ANSI.CYAN, COLORBGROUND);
         strLength += playerAgility.length() + 3;
         putString(" | " , strLength , WINDOW_HEIGHT - 1, MENUBGROUND, COLORBGROUND);
@@ -166,7 +169,7 @@ public class Presentation {
 
     private void printPlayer(Player player) throws IOException {
         if (player != null)
-            putCh(PLAYER.charAt(0), player.getPosition().getX(), player.getPosition().getY(), COLORPLAYER, COLORBGROUND);
+            putCh(player.getDisplayChar(), player.getPosition().getX(), player.getPosition().getY(), player.getDisplayColor(), COLORBGROUND);
     }
 
     private void printAllEntities(Level level) throws IOException {
@@ -185,7 +188,7 @@ public class Presentation {
                 // Используем getDisplayChar() из Enemy
                 char symbol = enemy.getDisplayChar();
                 //TextColor color = getEnemyColor(enemy);
-                putCh(symbol, pos.getX(), pos.getY(), COLORENEMY, COLORBGROUND);
+                putCh(symbol, pos.getX(), pos.getY(), enemy.getDisplayColor(), COLORBGROUND);
 
             } else if (entity instanceof BaseItem) {
                 BaseItem item = (BaseItem) entity;
@@ -291,7 +294,7 @@ public class Presentation {
 
     public void displayStartMenu() throws IOException {
         String[] menu = new String[]{
-                "1 - Start Game",
+                "1 - New Game",
                 "2 - Load Game",
                 "3 - Leaderboard",
                 "ESC - Exit",
@@ -306,6 +309,32 @@ public class Presentation {
                 "e - Scrolls",
                 "p - Save Game"
         };
+        drawMainMenu(menu);
+    }
+
+    public void displayPauseMenu() throws IOException {
+        String[] menu = new String[]{
+                "1 - Resume Game",
+                "2 - New Game",
+                "3 - Save Game",
+                "4 - Load Game",
+                "5 - Leaderboard",
+                "ESC - Exit",
+                " "," ",
+                "Keyboard:",
+                "ESC - Menu",
+                "WASD - Move",
+                "0-9 - Use item",
+                "h - Weapons",
+                "j - Foods",
+                "k - Potions",
+                "e - Scrolls",
+                "p - Save Game"
+        };
+        drawMainMenu(menu);
+    }
+
+    private void drawMainMenu(String[] menu) throws IOException {
 
         int leftX = WINDOW_WIDTH / 2 - MENU_WIDTH / 2;
         int leftY = 10;

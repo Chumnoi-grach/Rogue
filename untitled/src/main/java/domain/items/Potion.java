@@ -51,7 +51,7 @@ public class Potion extends BaseItem {
                 temporaryEffect.getDuration());
 //        switch (effectType) {
 //            case HEALTH:
-//                player.setCurrentHealth(player.getCurrentHealth() + bonus);
+//                player.setHealth(player.getHealth() + bonus);
 //                System.out.printf("%s выпил зелье здоровья! Макс. HP +%d на %d ходов%n",
 //                        player.getName(), bonus, usageTime);
 //                break;
@@ -104,9 +104,9 @@ public class Potion extends BaseItem {
 //        if (isTimeUp()){
 //            switch (effectType) {
 //                case HEALTH:
-//                    player.setCurrentHealth(Math.max(player.getCurrentHealth() - bonus, 1));
+//                    player.setHealth(Math.max(player.getHealth() - bonus, 1));
 //                    System.out.printf("У %s закончился эффект зелья здоровья! Текущее HP приведено к %d %n",
-//                            player.getName(), player.getCurrentHealth());
+//                            player.getName(), player.getHealth());
 //                    break;
 //                case STRENGTH:
 //                    player.setStrength(Math.max(player.getStrength() - bonus, 1));

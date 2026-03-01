@@ -18,18 +18,18 @@ public class Scroll extends BaseItem implements Entity, Backpackable {
     public void apply(Player player) {
         switch (effectType) {
             case HEALTH:
-                //здесь потом заменить вывод сообщения под статусную строку
+                //todo здесь потом заменить вывод сообщения под статусную строку
                 System.out.printf("%s зачитал %s и увеличил максимальное здоровье до %d\n",
                         player.getName(), name, player.getMaxHealth() + bonus
                 );
                 player.setMaxHealth(player.getMaxHealth() + bonus);
                 break;
             case STRENGTH:
-                player.setStrength(player.getStrength() + bonus);
+                player.setMaxStrength(player.getStrength() + bonus);
                 System.out.println(name + " увеличивает силу на " + bonus + "!");
                 break;
             case DEXTERITY:
-                player.setDexterity(player.getDexterity() + bonus);
+                player.setMaxDexterity(player.getDexterity() + bonus);
                 System.out.println(name + " увеличивает ловкость на " + bonus + "!");
                 break;
         }
