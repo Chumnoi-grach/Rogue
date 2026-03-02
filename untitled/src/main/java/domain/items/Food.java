@@ -36,8 +36,8 @@ public class Food extends BaseItem{
 
     @Override
     public String toString() {
-        return String.format("Еда '%s' (%s +%d) на %s",
-                name, effectType, bonus, position);
+        return String.format("Еда '%s' (%s +%d)",
+                name, effectType, bonus);
     }
 
     @Override
