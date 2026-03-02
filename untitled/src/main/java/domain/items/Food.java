@@ -15,7 +15,7 @@ public class Food extends BaseItem{
 
     @Override
     public void apply(Player player) {
-        player.setHealth(Math.min(player.getHealth() + bonus, player.getHealth()));
+        player.setHealth(Math.min(player.getHealth() + bonus, player.getMaxHealth()));
         System.out.printf("%s съел %s и увеличил текущее здоровье до %d\n",
                 player.getName(), name, player.getHealth()
         );
