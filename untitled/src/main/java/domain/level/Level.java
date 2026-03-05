@@ -2,7 +2,6 @@ package domain.level;
 
 import domain.Entity;
 import domain.Position;
-import domain.player.Player;
 
 import java.util.*;
 
@@ -14,14 +13,12 @@ public class Level {
     private int startRoom;
     private int endRoom;
     private Position stairsDown; // лестница вниз
-    private final ExplorationState explorationState;
 
     public Level(int levelNumber, Room[] rooms, List<Corridor> corridors /*, List<Corridor> corridors */) {
         this.levelNumber = levelNumber;
         this.rooms = rooms;
         this.corridors = corridors; // коридоры - список одномерных палок. С координатами начала и конца
         this.units = new LevelUnits();
-        this.explorationState = new ExplorationState();
     }
 
     public Room[] getRooms() {
@@ -42,7 +39,6 @@ public class Level {
 
     public void setStartRoom(int startRoom) {
         this.startRoom = startRoom;
-        this.explorationState.markRoomVisited(startRoom);
     }
 
     public int getStartRoom() {
@@ -175,7 +171,7 @@ public class Level {
     }
 
     //найти номер комнаты по позиции. Дверь тоже учитывается
-    private int findRoomByPosition(Position position) {
+    public int findRoomByPosition(Position position) {
         for (int i = 0; i < rooms.length; i++) {
             if (rooms[i].isPositionInRoom(position) || rooms[i].isPositionInDoor(position)) {
                 return i;
@@ -188,7 +184,7 @@ public class Level {
         return units.getAllEntities();
     }
 
-    public ExplorationState getExplorationState() {
-        return explorationState;
-    }
+//    public Exploration getExplorationState() {
+//        return explorationState;
+//    }
 }
