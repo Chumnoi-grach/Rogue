@@ -5,13 +5,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ExplorationState {
-    private static final int SIGHT_RADIUS = 5;                  // Радиус обзора
-    private Set<Integer> visitedRooms = new HashSet<>();        // Посещенные комнаты
-    private Set<String> everVisitedCells = new HashSet<>();     // Все клетки, которые когда-либо видел игрок
-    private Set<String> currentlyVisibleCells = new HashSet<>();// Клетки, видимые в текущий момент
+    private static final int SIGHT_RADIUS = 16;                  // Радиус обзора
+    private Set<Integer> visitedRooms = new HashSet<>();         // Посещенные комнаты
+    private Set<String> everVisitedCells = new HashSet<>();      // Все клетки, которые когда-либо видел игрок
+    private Set<String> currentlyVisibleCells = new HashSet<>(); // Клетки, видимые в текущий момент
 
-    public ExplorationState(int visitedRoom) {
-        visitedRooms.add(visitedRoom);
+    public ExplorationState() {
     }
 
     public void markRoomVisited(int roomIndex) {

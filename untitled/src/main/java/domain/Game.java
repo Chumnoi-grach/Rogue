@@ -222,7 +222,6 @@ public class Game {
         return backpackCurrentItems;
     }
 
-
     // Добавление области видимости
     public void updateVisibility() {
         ExplorationState exploration = currentLevel.getExplorationState();
@@ -271,16 +270,17 @@ public class Game {
 
 
     private void calculateVisibleCells(Position center, ExplorationState exploration) {
-        int radius = 16;
+        int radius = currentLevel.getExplorationState().getSightRadius();
         int startX = center.getX();
         int startY = center.getY();
 
         // Определяем, где стоит игрок
-        boolean isInCorridor = (findCorridorByPosition(center) != null);
+        Corridor corridorPlayer = findCorridorByPosition(center);
+        boolean isInCorridor = (corridorPlayer != null);
         boolean isInDoor = isDoorAtPosition(center);
 
         // лучи с шагом 3 градуса
-        for (double angle = 0; angle < 360; angle += 3) {
+        for (double angle = 0; angle < 360; angle += 2) {
             double radians = Math.toRadians(angle);
 
             double dx = Math.cos(radians);
@@ -293,6 +293,7 @@ public class Game {
             boolean enteredRoom = false;
             int currentRoom = -1;
 
+            //движемся по лучу проверяя клетки под ним
             for (int i = 0; i < radius; i++) {
                 x += dx * 0.5;
                 y += dy * 0.5;
@@ -317,22 +318,29 @@ public class Game {
                     break;
                 }
 
-                // Если мы в коридоре и это клетка коридора
+                // не просвечиваем открытую дверь если она не на том же уровне, что и игрок.
+                Position door = findDoorAtPosition(checkPos);
+                if (door != null) {
+                    if (center.getX() != door.getX() && center.getY() != checkPos.getY())
+                        break;
+                }
+
+
+                // Луч в коридоре
                 if (findCorridorByPosition(checkPos) != null) {
                     // Если игрок не в коридоре и это первая клетка коридора,
-                    // которую мы встретили - не обрываем луч, а продолжаем
                     if (!isInCorridor && !isInDoor) {
                         // Мы в комнате и луч уперся в коридор - обрываем
-                        // (нельзя увидеть коридор из комнаты через стены)
                         break;
                     }
-                    //мы в коридоре и пытаемся светить в неиследованные клетки коридора. Останавливаем луч
+                    // Останавливаем луч в неиследованных клетках
                     if (!exploration.isCellVisited(checkPos)) {
                         break;
                     }
-                    // Иначе (мы в коридоре или в двери) который уже посетили - продолжаем луч
-                    // здесь нужно добавить проверку чтобы коридор просвечивался только по прямой
-                    // если коридор повернул то обрываем луч
+                    //игрок в коридоре и луч в коридоре. Проверить что коридор прямой
+                    if (isInCorridor) {
+                        hasStraightCorridorLine(center,checkPos);
+                    }
                     markVisible(checkPos, exploration);
                     continue;
                 }
@@ -359,6 +367,49 @@ public class Game {
     }
 
 
+    private boolean hasStraightCorridorLine(Position from, Position to) {
+        // Проверяем, что обе точки в коридоре
+        Corridor fromCorridor = findCorridorByPosition(from);
+        Corridor toCorridor = findCorridorByPosition(to);
+
+        if (fromCorridor == null || toCorridor == null) return false;
+
+        // Проверяем, что это один и тот же коридор
+        if (fromCorridor != toCorridor) return false;
+
+        // Проверяем, что линия прямая (горизонталь или вертикаль)
+        if (from.getX() == to.getX()) {
+            // Вертикальная линия
+            int minY = Math.min(from.getY(), to.getY());
+            int maxY = Math.max(from.getY(), to.getY());
+
+            // Проверяем каждую клетку между ними
+            for (int y = minY + 1; y < maxY; y++) {
+                Position checkPos = new Position(from.getX(), y);
+                if (findCorridorByPosition(checkPos) == null) {
+                    return false; // Разрыв
+                }
+            }
+            return true;
+
+        } else if (from.getY() == to.getY()) {
+            // Горизонтальная линия
+            int minX = Math.min(from.getX(), to.getX());
+            int maxX = Math.max(from.getX(), to.getX());
+
+            // Проверяем каждую клетку между ними
+            for (int x = minX + 1; x < maxX; x++) {
+                Position checkPos = new Position(x, from.getY());
+                if (findCorridorByPosition(checkPos) == null) {
+                    return false; // Разрыв
+                }
+            }
+            return true;
+        }
+
+        return false; // Не прямая линия
+    }
+
     private void markVisible(Position pos, ExplorationState exploration) {
         exploration.markCellVisible(pos);
         exploration.markCellVisited(pos);
@@ -374,6 +425,17 @@ public class Game {
             }
         }
         return false;
+    }
+
+    private Position findDoorAtPosition(Position pos) {
+        for (Room room : currentLevel.getRooms()) {
+            for (Door door : room.getDoors()) {
+                if (door != null && door.getPosition().equal(pos)) {
+                    return door.getPosition();
+                }
+            }
+        }
+        return null;
     }
 
     private boolean isWall(Position pos) {
