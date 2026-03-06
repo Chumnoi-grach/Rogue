@@ -13,7 +13,6 @@ public class Game {
     private Level level;
     private Player player;
     private Generation generator = new Generation();
-    private int levelNumber = 1;
     private int currentRoom = -1;//-1 если игрок не в комнате
     private String gameLog;
     private ItemType backpackCurrentItems; // Текущая вкладка рюкзака
@@ -26,52 +25,72 @@ public class Game {
         // генерируем первый уровень
         generateLevel(1);
 
-//        for (int i = 0; i < 9; i++) {
-//            player.getBackpack().addItem(EntityGenerator.generateRandomFood());
-//        }
-//
-//        for (int i = 0; i < 9; i++) {
-//            player.getBackpack().addItem(EntityGenerator.generateRandomWeapon());
-//        }
-//
-//        for (int i = 0; i < 9; i++) {
-//            player.getBackpack().addItem(EntityGenerator.generateRandomPotion());
-//        }
-//
-//        for (int i = 0; i < 9; i++) {
-//            player.getBackpack().addItem(EntityGenerator.generateRandomScroll());
-//        }
+        for (int i = 0; i < 9; i++) {
+            player.getBackpack().addItem(EntityGenerator.generateRandomFood());
+        }
+
+        for (int i = 0; i < 9; i++) {
+            player.getBackpack().addItem(EntityGenerator.generateRandomWeapon());
+        }
+
+        for (int i = 0; i < 9; i++) {
+            player.getBackpack().addItem(EntityGenerator.generateRandomPotion());
+        }
+
+        for (int i = 0; i < 9; i++) {
+            player.getBackpack().addItem(EntityGenerator.generateRandomScroll());
+        }
 
         setGameLog("Game started");
     }
 
     private void setNewPosition(Position newPosition) {
         setGameLog("");
+
+        //проверить не спит ли игрок
+
+
+        Entity baseItem = level.getBaseItemByPos(newPosition);
+        Entity enemy = level.getEnemyByPos(newPosition);
         //проверка монстра:
         //нанести удар
         //если удар убил монстра: 1.забираем золото, 2.встаем на клетку
-        //иначе
-        //Проверка границ комнат и, коридоров
-        if (checkBounds(newPosition)) {
-            player.setPosition(newPosition);
+        if (enemy != null) {
+            setGameLog("Игрок атаковал " + ((Enemy) enemy).getType() +
+            enemy.toString());
+            player.attack((Enemy) enemy);
+            //if(((Enemy) enemy).isAlive() )
+            // забрать золото
+            // удалить моба с карты
 
+        } else if (checkBounds(newPosition)) { //Проверка границ комнат и, коридоров
+            player.setPosition(newPosition);
         }
+
+        player.processTurn();
 
         //Проверка, что под ногами:
         // 1. предмет,
-        Entity entity = level.getBaseItemByPos(newPosition);
-        if (entity != null) {
-            setGameLog(entity.toString());
-            if (player.pickUpItem((Backpackable) entity) ) {
-                 level.deleteEntity(entity);
+        if (baseItem != null) {
+            if (player.pickUpItem((Backpackable) baseItem) ) {
+                level.deleteEntity(baseItem);
+                setGameLog("Поднял " + baseItem.toString());
+            } else {
+                setGameLog(baseItem.toString());
             }
         }
 
         // 2. выход с уровня
-        checkStairsDown(newPosition);
+        checkStairsDown();
 
         //После хода игрока, ходят все монстры
         moveAllEnemies();
+
+        if (player.getHealth() == 0) {
+            //Игрок убит
+            System.out.println("Игрок убит");
+            setGameLog("Вы были убиты! Конец игры!");
+        }
     }
 
     public void generateLevel(int levelNumber) {
@@ -86,26 +105,13 @@ public class Game {
         exploration = new Exploration(level, player);
         exploration.markRoomVisited(currentRoom);
 
-        // создаю предмет в комнате игрока
-        BaseItem item = EntityGenerator.generateRandomTreasure();
-        item.setPosition(level.getRoom(currentRoom).getRandomFreePosition());
-        level.addEntity(item, currentRoom);
-
-        item = EntityGenerator.generateRandomTreasure();
-        item.setPosition(level.getRoom(currentRoom).getRandomFreePosition());
-        level.addEntity(item, currentRoom);
-
-        item = EntityGenerator.generateRandomTreasure();
-        item.setPosition(level.getRoom(currentRoom).getRandomFreePosition());
-        level.addEntity(item, currentRoom);
-
     }
 
 
 
 
-    private void checkStairsDown(Position pos) {
-        if (pos.equal(level.getStairsDown())) {
+    private void checkStairsDown() {
+        if (player.getPosition().equal(level.getStairsDown())) {
             if (level.getLevelNumber() == 20) {
                 setGameLog("You are won game!");
             } else {
