@@ -1,15 +1,11 @@
 package domain.player;
 
 import com.googlecode.lanterna.TextColor;
-import domain.Position;
-import domain.Treasure;
+import domain.*;
+import domain.Character;
 import domain.items.*;
 
 import java.util.*;
-
-import domain.Character;
-import domain.Entity;
-import domain.level.Room;
 
 /**
  * Важно у игрока:
@@ -77,6 +73,11 @@ public class Player extends Character implements Entity {
         Optional<Backpackable> usedItem = backpack.useItem(type, internalSlot, this);
     }
 
+
+    public Weapon getEquippedWeapon() {
+        return equippedWeapon;
+    }
+
     public Weapon equipWeapon(Weapon newWeapon) {
         Weapon oldWeapon = this.equippedWeapon;
         this.equippedWeapon = newWeapon;
@@ -92,6 +93,7 @@ public class Player extends Character implements Entity {
             System.out.println("Вы экипировали " + newWeapon.getName());
         } else if (oldWeapon != null && newWeapon == null){
             oldWeapon.discharge(this);
+            this.equippedWeapon = null;
             System.out.println("Вы сняли " + oldWeapon.getName());
         }
 

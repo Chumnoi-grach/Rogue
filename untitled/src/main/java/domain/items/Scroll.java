@@ -3,7 +3,6 @@ package domain.items;
 import domain.Entity;
 import domain.player.Player;
 import domain.Position;
-import domain.Character;
 
 public class Scroll extends BaseItem implements Entity, Backpackable {
     private final ConsumableType effectType;          // Тип свитка (enum)
@@ -35,11 +34,6 @@ public class Scroll extends BaseItem implements Entity, Backpackable {
         }
     }
 
-//    @Override
-//    public void setPosition(Position position) {
-//        throw new UnsupportedOperationException("Свиток нельзя переместить!");
-//    }
-
     public ConsumableType getConsumableType() {
         return effectType;
     }
@@ -50,8 +44,8 @@ public class Scroll extends BaseItem implements Entity, Backpackable {
 
     @Override
     public String toString() {
-        return String.format("Свиток '%s' (%s +%d) на %s",
-                name, type, bonus, position);
+        return String.format("Свиток '%s' (%s +%d)",
+                name, type, bonus);
     }
 
     @Override

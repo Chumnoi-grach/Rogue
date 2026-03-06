@@ -13,11 +13,10 @@ import com.googlecode.lanterna.terminal.swing.SwingTerminalFrame;
 import domain.Entity;
 import domain.Game;
 import domain.Position;
+import domain.items.Backpackable;
 import domain.items.BaseItem;
-import domain.level.Corridor;
-import domain.level.Door;
-import domain.level.Level;
-import domain.level.Room;
+import domain.items.ItemType;
+import domain.level.*;
 import domain.monsters.Enemy;
 import domain.player.Player;
 
@@ -35,8 +34,6 @@ public class Presentation {
     private final Screen screen;
 
     private static final TextColor COLORBGROUND = TextColor.ANSI.BLACK;
-    private static final TextColor COLORPLAYER = TextColor.ANSI.WHITE;
-    private static final TextColor COLORENEMY = TextColor.ANSI.RED_BRIGHT;
     private static final TextColor COLORITEM = TextColor.ANSI.GREEN;
     private static final TextColor COLORBOUND = TextColor.ANSI.YELLOW;
     private static final TextColor COLORDOOR = TextColor.ANSI.YELLOW_BRIGHT;
@@ -56,22 +53,9 @@ public class Presentation {
     private static final String STAIRSDOWN = "#";
 
     private final int MENU_WIDTH = 20;
-    private final int MENU_HEIGHT = 18;
+    private final int BACKPACK_WIDTH = 70;
     private static final TextColor MENUBORDER = TextColor.ANSI.WHITE;
     private static final TextColor MENUBGROUND = TextColor.ANSI.BLACK_BRIGHT;
-
-/*
-╔═════╗
-║     ┃░░░
-║     ║
-╚══━══╝
-   ░
-
- ╔┓┏╦━━ ╦ ┓╔┓╔━━╗╔╗ ║┗┛║┗━╣┃║┃║╯╰║║║ ║┏┓║┏ ━ ╣┗ ╣┗╣╰╯║╠ ╣ ╚┛┗╩━━ ╩ ━╩━╩━━╝╚╝
-
-
-
- */
 
     public Presentation() throws IOException {
         DefaultTerminalFactory factory = new DefaultTerminalFactory();
@@ -116,6 +100,11 @@ public class Presentation {
         terminal.close();
     }
 
+
+
+
+
+    /*
     public void displayGame(Game game) throws IOException {
         clear();
         printRooms(game.getCurrentLevel());                     // печать комнат
@@ -126,26 +115,24 @@ public class Presentation {
                 game.getCurrentLevel().getStairsDown().getY(),
                 COLORSTAIRS, COLORBGROUND);
 
-        // ПЕЧАТЬ СУЩНОСТЕЙ
-
-        printAllEntities(game.getCurrentLevel());
-        // ИГРОКА
+        printAllEntities(game.getCurrentLevel());               // Печать сущностей
 
         printStatusBar(game);                                   // Печать строки состояния
         printPlayer(game.getPlayer());                          // Печать игрока
 
+        printGameLog(game);
     }
-
+*/
     private void printStatusBar(Game game) throws IOException {
         //печать строки состояния
-        // Level: 2  |  HP: 10(45)  |  Strength: 22(22)  |  Agility: 15  |  Gold: 33
+        // Player | Level: 1 | HP: 10(45) | Strength: 22 | Agility: 15 | Gold: 33
 
         String nameStr = game.getPlayer().getName();
         putString(nameStr, 15, WINDOW_HEIGHT - 1, TextColor.ANSI.WHITE, COLORBGROUND);
         int strLength = 15 + nameStr.length();
         putString(" | " , strLength , WINDOW_HEIGHT - 1, MENUBGROUND, COLORBGROUND);
 
-        String levelStr = "Level " + game.getCurrentLevel().getLevelNumber();
+        String levelStr = "Level " + game.getLevel().getLevelNumber();
         putString(levelStr, strLength + 3, WINDOW_HEIGHT - 1, MENUBGROUND, COLORBGROUND);
         strLength += levelStr.length() + 3;
         putString(" | " , strLength , WINDOW_HEIGHT - 1, MENUBGROUND, COLORBGROUND);
@@ -169,93 +156,14 @@ public class Presentation {
         putString(playerGold, strLength + 3, WINDOW_HEIGHT - 1, TextColor.ANSI.YELLOW_BRIGHT, COLORBGROUND);
     }
 
+    public void printGameLog(Game game) throws IOException {
+        putString(game.getGameLog(), 2,0, TextColor.ANSI.WHITE, COLORBGROUND);
+    }
+
 
     private void printPlayer(Player player) throws IOException {
         if (player != null)
             putCh(player.getDisplayChar(), player.getPosition().getX(), player.getPosition().getY(), player.getDisplayColor(), COLORBGROUND);
-    }
-
-    private void printAllEntities(Level level) throws IOException {
-        Set<Entity> allEntities = level.getAllEntities();
-
-        for (Entity entity : allEntities) {
-            // Пропускаем игрока (его отображаем отдельно)
-            if (entity instanceof Player) continue;
-
-            Position pos = entity.getPosition();
-            if (pos == null) continue;
-
-            // Определяем символ и цвет для каждого типа сущности
-            if (entity instanceof BaseItem) {
-                BaseItem item = (BaseItem) entity;
-                // Определяем символ для предмета
-                char symbol = item.getDisplayChar();
-                //TextColor color = getItemColor(item);
-                putCh(symbol, pos.getX(), pos.getY(), COLORITEM, COLORBGROUND);
-
-            } else if (entity instanceof Enemy) {
-                Enemy enemy = (Enemy) entity;
-                // Используем getDisplayChar() из Enemy
-                char symbol = enemy.getDisplayChar();
-                //TextColor color = getEnemyColor(enemy);
-                putCh(symbol, pos.getX(), pos.getY(), enemy.getDisplayColor(), COLORBGROUND);
-            }
-        }
-    }
-
-    private void printCorridors(Level currentLevel) throws IOException {
-        List<Corridor> corridors = currentLevel.getCorridors();
-        for (int i = 0; i < corridors.size(); i++) {
-            Corridor corridor = corridors.get(i);
-            int x1 = corridor.getLeftCorner().getX();
-            int y1 = corridor.getLeftCorner().getY();
-            int x2 = corridor.getRightCorner().getX();
-            int y2 = corridor.getRightCorner().getY();
-
-            // рисуем включительно по x2 и y2
-            for (int x = x1; x <= x2; x++) {
-                for (int y = y1; y <= y2; y++) {
-                    putCh(PASSAGE.charAt(0), x, y, COLORPASSAGE, COLORBGROUND);
-                }
-            }
-        }
-    }
-
-    private void printDoors(Level currentLevel) throws IOException {
-        for (int i = 0; i < ROOM_COUNT; i++) {
-            Door[] doors = currentLevel.getRoom(i).getDoors();
-
-            if(currentLevel.getRoom(i).getUpperDoor() != null) {
-                putCh(HORIZDOOR.charAt(0),
-                        currentLevel.getRoom(i).getUpperDoor().getPosition().getX(),
-                        currentLevel.getRoom(i).getUpperDoor().getPosition().getY(),
-                        COLORDOOR, COLORBGROUND);
-            }
-            if(doors[1] != null) {
-                putCh(VERTDOOR.charAt(0),
-                        currentLevel.getRoom(i).getRigthDoor().getPosition().getX(),
-                        currentLevel.getRoom(i).getRigthDoor().getPosition().getY(),
-                        COLORDOOR, COLORBGROUND);
-            }
-            if(doors[2] != null) {
-                putCh(HORIZDOOR.charAt(0),
-                        currentLevel.getRoom(i).getBottomDoor().getPosition().getX(),
-                        currentLevel.getRoom(i).getBottomDoor().getPosition().getY(),
-                        COLORDOOR, COLORBGROUND);
-            }
-            if(doors[3] != null) {
-                putCh(VERTDOOR.charAt(0),
-                        currentLevel.getRoom(i).getLeftDoor().getPosition().getX(),
-                        currentLevel.getRoom(i).getLeftDoor().getPosition().getY(),
-                        COLORDOOR, COLORBGROUND);
-            }
-        }
-    }
-
-    private void printRooms(Level currentLevel) throws IOException {
-        for (Room room : currentLevel.getRooms()) {
-            printRoomBox(room.getLeftCorner(), room.getRightCorner(), COLORBOUND, COLORBGROUND);
-        }
     }
 
     private void printRoomBox(Position leftCorner, Position rightCorner, TextColor color, TextColor bgcolor) throws IOException {
@@ -344,7 +252,7 @@ public class Presentation {
         int rightX = WINDOW_WIDTH / 2 + MENU_WIDTH / 2;
         int rightY = leftY + menu.length + 2;
 
-        clearBox(new Position(leftX - 1, leftY - 3), new Position(rightX + 1, rightY + 1));
+        clearBox(new Position(leftX - 1, leftY - 3), new Position(rightX + 1, rightY + 1), TextColor.ANSI.BLACK, TextColor.ANSI.BLACK);
         displayLogo();
 
         Position leftCorner = new Position(leftX, leftY);
@@ -361,10 +269,10 @@ public class Presentation {
         }
     }
 
-    private void clearBox(Position leftCorner, Position rightCorner) throws IOException {
+    private void clearBox(Position leftCorner, Position rightCorner, TextColor color, TextColor bgcolor) throws IOException {
         for (int x = leftCorner.getX(); x < rightCorner.getX() + 1; x++) {
             for (int y = leftCorner.getY(); y < rightCorner.getY() + 1; y++) {
-                putCh(' ', x, y, TextColor.ANSI.BLACK, TextColor.ANSI.BLACK);
+                putCh(' ', x, y, color, bgcolor);
             }
         }
     }
@@ -391,6 +299,60 @@ public class Presentation {
     }
 
     public void displayLeaderboard() {
+
+    }
+
+    public void displayBackpack(Game game) throws IOException {
+        int backpackWidth = 0;
+        List<Backpackable> backpackList =  game.getPlayer().getBackpack().getListByType(game.getBackpackCurrentItems());
+
+        //Определить ширину рюкзака по самой длиной строке содержимого
+        for (int i = 0; i < backpackList.size(); i++) {
+            if (backpackList.get(i).toString().length() > backpackWidth)
+                backpackWidth = backpackList.get(i).toString().length();
+        }
+
+        if (game.getBackpackCurrentItems() == ItemType.WEAPON &&
+                game.getPlayer().getEquippedWeapon() != null &&
+                (game.getPlayer().getEquippedWeapon().toString().length() + 11) > backpackWidth) {
+            backpackWidth = game.getPlayer().getEquippedWeapon().toString().length() + 11;
+        }
+
+        if (backpackWidth == 0) backpackWidth = 20;
+        backpackWidth += 5;
+        int leftX = WINDOW_WIDTH / 2 - backpackWidth / 2;
+        int leftY = 8;
+        int rightX = WINDOW_WIDTH / 2 + backpackWidth / 2;
+        int rightY = leftY + backpackList.size() + 1;
+        int listStartY = leftY + 1;
+
+        if (game.getBackpackCurrentItems() == ItemType.WEAPON) {
+            rightY++;
+            listStartY++;
+        }
+
+        displayGame(game);
+        clearBox(new Position(leftX-1,leftY-1), new Position(rightX+1,rightY+1), COLORBGROUND, COLORBGROUND);
+        clearBox(new Position(leftX, leftY), new Position(rightX, rightY), COLORBOUND, COLORPASSAGE);
+        //рамка рюкзака по размеру списка
+        printRoomBox(new Position(leftX,leftY), new Position(rightX,rightY), TextColor.ANSI.WHITE, COLORPASSAGE);
+
+        String itemTypeHead = " * " + game.getBackpackCurrentItems().getDisplayName() + " * ";
+        putString(itemTypeHead, leftX + backpackWidth / 2 - itemTypeHead.length() / 2, leftY, TextColor.ANSI.BLACK, COLORPASSAGE);
+
+        if (game.getBackpackCurrentItems() == ItemType.WEAPON) {
+            String key = "0.(hands)  ";
+            putString(key, leftX + 1, listStartY - 1, TextColor.ANSI.BLACK, COLORPASSAGE);
+            if (game.getPlayer().getEquippedWeapon() != null ) {
+                putString(game.getPlayer().getEquippedWeapon().toString(), leftX + key.length(), listStartY - 1, TextColor.ANSI.BLACK, COLORPASSAGE);
+            }
+        }
+
+        for (int i = 0; i < backpackList.size(); i++) {
+            String key = i + 1 + ".  ";
+            putString(key, leftX + 1, listStartY + i, TextColor.ANSI.BLACK, COLORPASSAGE);
+            putString(backpackList.get(i).toString(), leftX + key.length(), listStartY + i, TextColor.ANSI.WHITE, COLORPASSAGE);
+        }
 
     }
 
@@ -423,4 +385,222 @@ public class Presentation {
     public InputProvider getScreen() {
         return screen;
     }
+
+    private void printDoors(Level level, Exploration exploration) throws IOException {
+        Room[] rooms = level.getRooms();
+
+        for (int i = 0; i < rooms.length; i++) {
+            Room room = rooms[i];
+            Door[] doors = room.getDoors();
+
+            // Проверяем каждую дверь
+            for (int doorIndex = 0; doorIndex < doors.length; doorIndex++) {
+                Door door = doors[doorIndex];
+                if (door == null) continue;
+
+                Position doorPos = door.getPosition();
+
+                // Рисуем дверь если:
+                // 1. Она видима сейчас ИЛИ
+                // 2. Комната посещена (тогда двери видны всегда)
+                if (exploration.isCellVisible(doorPos) || exploration.isRoomVisited(i)) {
+                    char doorChar = getDoorChar(doorIndex);
+                    putCh(doorChar, doorPos.getX(), doorPos.getY(),
+                            COLORDOOR, COLORBGROUND);
+                }
+            }
+        }
+    }
+
+    private char getDoorChar(int doorIndex) {
+        // Определяем символ двери по направлению
+        switch (doorIndex) {
+            case 0: return '─'; // Северная дверь (горизонтальная)
+            case 1: return '│'; // Восточная дверь (вертикальная)
+            case 2: return '─'; // Южная дверь (горизонтальная)
+            case 3: return '│'; // Западная дверь (вертикальная)
+            default: return '+';
+        }
+    }
+
+    private void printVisibleEntities(Level level, Exploration exploration) throws IOException {
+        Set<Entity> allEntities = level.getAllEntities();
+
+        for (Entity entity : allEntities) {
+            // Пропускаем игрока (его отображаем отдельно)
+            if (entity instanceof Player) continue;
+
+            Position pos = entity.getPosition();
+            if (pos == null) continue;
+
+            // Рисуем сущность только если она видима
+            if (exploration.isCellVisible(pos)) {
+                if (entity instanceof BaseItem) {
+                    BaseItem item = (BaseItem) entity;
+                    putCh(item.getDisplayChar(), pos.getX(), pos.getY(),
+                            COLORITEM, COLORBGROUND);
+
+                } else if (entity instanceof Enemy) {
+                    Enemy enemy = (Enemy) entity;
+                    putCh(enemy.getDisplayChar(), pos.getX(), pos.getY(),
+                            enemy.getDisplayColor(), COLORBGROUND);
+                }
+            }
+        }
+    }
+
+    private void printRooms(Level level, Exploration exploration) throws IOException {
+        Room[] rooms = level.getRooms();
+
+        for (int i = 0; i < rooms.length; i++) {
+            Room room = rooms[i];
+
+            if (exploration.isRoomVisited(i)) {
+                // Комната полностью исследована - рисуем всё
+                printRoomBox(room.getLeftCorner(), room.getRightCorner(),
+                        COLORBOUND, COLORBGROUND);
+                printRoomFloor(room, exploration); // Рисуем пол только в видимых клетках
+
+            } else {
+                // Комната не исследована - рисуем только видимые части
+                printVisibleRoomParts(room, exploration);
+            }
+        }
+    }
+
+    private void printRoomFloor(Room room, Exploration exploration) throws IOException {
+        Position lc = room.getLeftCorner();
+        Position rc = room.getRightCorner();
+
+        // Рисуем пол только в видимых клетках внутри комнаты
+        for (int x = lc.getX() + 1; x < rc.getX(); x++) {
+            for (int y = lc.getY() + 1; y < rc.getY(); y++) {
+                Position pos = new Position(x, y);
+                if (exploration.isCellVisible(pos)) {
+                    putCh(ROOMFLOOR.charAt(0), x, y, COLORBOUND, COLORBGROUND);
+                }
+            }
+        }
+    }
+
+    private void printVisibleRoomParts(Room room, Exploration exploration) throws IOException {
+        Position lc = room.getLeftCorner();
+        Position rc = room.getRightCorner();
+
+        // Проходим по всем клеткам комнаты (включая стены)
+        for (int x = lc.getX(); x <= rc.getX(); x++) {
+            for (int y = lc.getY(); y <= rc.getY(); y++) {
+                Position pos = new Position(x, y);
+
+                // Если клетка видима
+                if (exploration.isCellVisible(pos)) {
+
+                    // Определяем, стена это или внутренность комнаты
+                    if (isWallPosition(pos, room)) {
+                        // Это стена - рисуем соответствующий символ
+                        char wallChar = getWallChar(pos, room);
+                        putCh(wallChar, x, y, COLORBOUND, COLORBGROUND);
+                    } else {
+                        // Это внутренность комнаты
+                        putCh(ROOMFLOOR.charAt(0), x, y, COLORBOUND, COLORBGROUND);
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean isWallPosition(Position pos, Room room) {
+        Position lc = room.getLeftCorner();
+        Position rc = room.getRightCorner();
+
+        return pos.getX() == lc.getX() || pos.getX() == rc.getX() ||
+                pos.getY() == lc.getY() || pos.getY() == rc.getY();
+    }
+
+    private char getWallChar(Position pos, Room room) {
+        Position lc = room.getLeftCorner();
+        Position rc = room.getRightCorner();
+
+        // Определяем углы
+        if (pos.getX() == lc.getX() && pos.getY() == lc.getY()) return '╔';
+        if (pos.getX() == rc.getX() && pos.getY() == lc.getY()) return '╗';
+        if (pos.getX() == lc.getX() && pos.getY() == rc.getY()) return '╚';
+        if (pos.getX() == rc.getX() && pos.getY() == rc.getY()) return '╝';
+
+        // Горизонтальные стены
+        if (pos.getY() == lc.getY() || pos.getY() == rc.getY()) return '═';
+
+        // Вертикальные стены
+        return '║';
+    }
+
+    // Обновленный метод printCorridors с учетом тумана войны
+    private void printCorridors(Level level, Exploration exploration) throws IOException {
+        List<Corridor> corridors = level.getCorridors();
+
+        for (Corridor corridor : corridors) {
+            Position lc = corridor.getLeftCorner();
+            Position rc = corridor.getRightCorner();
+
+            // Проходим по всем клеткам коридора
+            for (int x = lc.getX(); x <= rc.getX(); x++) {
+                for (int y = lc.getY(); y <= rc.getY(); y++) {
+                    Position pos = new Position(x, y);
+
+                    // Рисуем клетку коридора если:
+                    // 1. Она видима сейчас ИЛИ
+                    // 2. Она была посещена ранее (постоянная память карты)
+                    if (exploration.isCellVisible(pos) || exploration.isCellVisited(pos)) {
+                        putCh(PASSAGE.charAt(0), x, y, COLORPASSAGE, COLORBGROUND);
+                    }
+                }
+            }
+        }
+    }
+
+    // Главный метод отрисовки
+    public void displayGame(Game game) throws IOException {
+        clear();
+        Level level = game.getLevel();
+        Exploration exploration = game.getExploration();
+        Player player = game.getPlayer();
+
+        // Обновляем видимость перед отрисовкой
+        game.updateVisible();
+
+        // Рисуем в правильном порядке (от фона к переднему плану)
+        printRooms(level, exploration);                 // Стены комнат
+        printCorridors(level, exploration);             // Коридоры
+        printDoors(level, exploration);                 // Двери
+
+        // Лестница вниз
+        Position stairs = level.getStairsDown();
+        if (exploration.isCellVisible(stairs) ||
+                exploration.isRoomVisited(findRoomByPosition(stairs, level))) {
+            putCh(STAIRSDOWN.charAt(0), stairs.getX(), stairs.getY(),
+                    COLORSTAIRS, COLORBGROUND);
+        }
+
+        printVisibleEntities(level, exploration);        // Монстры и предметы
+        printPlayer(player);                             // Игрок (всегда видим)
+
+        printStatusBar(game);
+        printGameLog(game);
+
+        refresh();
+    }
+
+    // Вспомогательный метод для поиска комнаты по позиции
+    private int findRoomByPosition(Position pos, Level level) {
+        Room[] rooms = level.getRooms();
+        for (int i = 0; i < rooms.length; i++) {
+            if (rooms[i].isPositionInRoom(pos) || rooms[i].isPositionInDoor(pos)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
+
 }
