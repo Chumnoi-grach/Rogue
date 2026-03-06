@@ -1,18 +1,20 @@
 package domain;
 
+import com.googlecode.lanterna.TextColor;
+
 import java.util.List;
 
 public abstract class Character implements Entity{
     protected int strength;             // сила
     protected int dexterity;            // ловкость
     protected int maxHealth;            // максимальное здоровье
-    protected int currentHealth;        // текущее здоровье
+    protected int health;        // текущее здоровье
     protected Position position;        // текущая позиция
 
 
-    protected Character(Position position, int currentHealth, int maxHealth, int strength, int dexterity) {
+    protected Character(Position position, int health, int maxHealth, int strength, int dexterity) {
         this.position = position;
-        this.currentHealth = currentHealth;
+        this.health = health;
         this.maxHealth = maxHealth;
         this.strength = strength;
         this.dexterity = dexterity;
@@ -25,30 +27,29 @@ public abstract class Character implements Entity{
 
     public int getMaxHealth() {return maxHealth;}
 
-    public int getCurrentHealth() {return currentHealth;}
+    public int getHealth() {return health;}
 
     @Override
     public Position getPosition() {return this.position;}
 
     // Сеттеры
 
-    public void setMaxHealth(int health) {
-        this.maxHealth = maxHealth;
-        if (this.currentHealth > this.maxHealth) {
-            this.currentHealth = this.maxHealth;
+    public void setMaxHealth(int value) {
+        this.maxHealth = value;
+        //Для чего это проверка?
+        if (this.health > this.maxHealth) {
+            this.health = this.maxHealth;
         }
     }
 
-    public void setCurrentHealth(int health) {
-        this.currentHealth = Math.max(0, Math.min(health, this.maxHealth));
+    public void setHealth(int value) {
+        this.health = value;
     }
-
-    public void setStrength(int strength) {
-        this.strength = strength;
+    public void setStrength(int value) {
+        this.strength = value;
     }
-
-    public void setDexterity(int dexterity) {
-        this.dexterity = dexterity;
+    public void setDexterity(int value) {
+        this.dexterity = value;
     }
 
     @Override
@@ -57,19 +58,19 @@ public abstract class Character implements Entity{
     @Override
     public String toString() {
         return String.format("Character (%d/%d hp) | Сила: %d | Ловкость: %d | Position: %s",
-                currentHealth, maxHealth, strength, dexterity, position);
+                health, maxHealth, strength, dexterity, position);
     }
 
     //Принятие урона
     public boolean takeDamage(int damage, Character fromUnit) {
         if (damage <= 0) return false;
 
-        this.currentHealth -= damage;
-        if (this.currentHealth < 0) {
-            this.currentHealth = 0;
+        this.health -= damage;
+        if (this.health < 0) {
+            this.health = 0;
         }
 
-        return this.currentHealth == 0;
+        return this.health == 0;
     }
     //Шанс попадания атаки
     protected double calculateHitChance(int targetDexterity){
@@ -88,7 +89,7 @@ public abstract class Character implements Entity{
     //}
 
     public void heal(int amount) {
-        this.currentHealth = Math.min(this.currentHealth + amount, maxHealth);
+        this.health = Math.min(this.health + amount, maxHealth);
     }
 
 //    public boolean attack(Character target) {
@@ -105,8 +106,9 @@ public abstract class Character implements Entity{
 //    }
 
     public boolean isAlive(){
-        return this.currentHealth > 0;
+        return this.health > 0;
     }
 
     public abstract char getDisplayChar();
+    public abstract TextColor getDisplayColor();
 }

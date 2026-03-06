@@ -2,10 +2,11 @@ package domain;
 
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
+import domain.items.ItemType;
 import presentation.Presentation;
 
 import java.io.IOException;
-
+import java.lang.Character;
 
 public class GameLoop {
     private final Presentation presentation;
@@ -47,13 +48,13 @@ public class GameLoop {
                 presentation.displayStartMenu();
                 break;
             case PAUSE:
-                //presentation.displayPauseMenu();
+                presentation.displayPauseMenu();
                 break;
             case GAME:
                 presentation.displayGame(currentGame);
                 break;
             case BACKPACK:
-                //presentation.displayBackpack(currentGame.getBackpack());
+                presentation.displayBackpack(currentGame);
                 break;
             case LEADERS:
                 presentation.displayLeaderboard();
@@ -114,9 +115,9 @@ public class GameLoop {
         }
     }
 
-    private void handlePauseInput(KeyStroke key) {
+    private void handlePauseInput(KeyStroke key) throws IOException {
         if (key.getKeyType() == KeyType.Escape) {
-            state = FSM_State.GAME;
+            running = false;
             return;
         }
 
@@ -126,14 +127,22 @@ public class GameLoop {
                 case '1': // Resume
                     state = FSM_State.GAME;
                     break;
-                case '2': // Save & Exit
-                    saveAndExit();
+                case '2': // New game
+                    String name = presentation.displayEnterNameDialog();
+                    if (name != null && !name.isEmpty()) {
+                        currentGame = null;
+                        currentGame = new Game(name);
+                        currentGame.generateLevel(1);
+                        state = FSM_State.GAME;
+                    }
                     break;
-                case '3': // Main Menu
-                    state = FSM_State.START;
-                    currentGame = null;
+                case '3': // Save game
+                    saveGame();
                     break;
-                case '4': // Leaders
+                case '4': // Load game
+                    loadGame();
+                    break;
+                case '5': // Leaders
                     state = FSM_State.LEADERS;
                     break;
             }
@@ -142,50 +151,44 @@ public class GameLoop {
 
     private void handleGameInput(KeyStroke key) {
         if (key.getKeyType() == KeyType.Escape) {
-//            state = FSM_State.PAUSE;
-            state = FSM_State.START;
+            state = FSM_State.PAUSE;
             return;
         }
 
         // Обработка символов
         if (key.getKeyType() == KeyType.Character) {
-            char c = key.getCharacter();
+            char c = Character.toLowerCase(key.getCharacter());
             switch (c) {
-                case 'W':
-                case 'w':
+                case 'w': case 'ц':
                     currentGame.moveUp();
                     return;
-                case 'S':
-                case 's':
+                case 's': case 'ы':
                     currentGame.moveDown();
                     return;
-                case 'A':
-                case 'a':
+                case 'a': case 'ф':
                     currentGame.moveLeft();
                     return;
-                case 'D':
-                case 'd':
+                case 'd': case 'в':
                     currentGame.moveRight();
                     return;
-                case 'p':
+                case 'p':case 'з':
                     saveGame();
                     return;
-                case 'h':
-                    //currentGame.setCurrentBackpack("HEALTH");
+                case 'h': case 'р':
+                    currentGame.setBackpackCurrentItems(ItemType.WEAPON);
                     state = FSM_State.BACKPACK;
                     return;
-                case 'j':
-                    //currentGame.setCurrentBackpack("WEAPONS");
+                case 'j': case 'о':
+                    currentGame.setBackpackCurrentItems(ItemType.FOOD);
                     state = FSM_State.BACKPACK;
                     return;
-                case 'k':
-                    //currentGame.setCurrentBackpack("ITEMS");
+                case 'k': case 'л':
+                    currentGame.setBackpackCurrentItems(ItemType.POTION);
                     state = FSM_State.BACKPACK;
                     return;
-                case 'e':
-                    //currentGame.setCurrentBackpack("EQUIPMENT");
+                case 'e': case 'у':
+                    currentGame.setBackpackCurrentItems(ItemType.SCROLL);
                     state = FSM_State.BACKPACK;
-                    return;
             }
         }
 
@@ -198,11 +201,30 @@ public class GameLoop {
         }
 
         if (key.getKeyType() == KeyType.Character) {
-            char c = key.getCharacter();
+            char c = Character.toLowerCase(key.getCharacter());
+
             if (c >= '0' && c <= '9') {
                 // Выбор предмета по номеру (0-9)
                 int itemIndex = c - '0';
-                //currentGame.selectBackpackItem(itemIndex);
+                currentGame.selectBackpackItem(itemIndex);
+            }
+
+            switch (c) {
+                case 'h': case 'р':
+                    currentGame.setBackpackCurrentItems(ItemType.WEAPON);
+                    state = FSM_State.BACKPACK;
+                    return;
+                case 'j': case 'о':
+                    currentGame.setBackpackCurrentItems(ItemType.FOOD);
+                    state = FSM_State.BACKPACK;
+                    return;
+                case 'k': case 'л':
+                    currentGame.setBackpackCurrentItems(ItemType.POTION);
+                    state = FSM_State.BACKPACK;
+                    return;
+                case 'e': case 'у':
+                    currentGame.setBackpackCurrentItems(ItemType.SCROLL);
+                    state = FSM_State.BACKPACK;
             }
         }
     }

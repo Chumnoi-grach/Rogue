@@ -1,8 +1,7 @@
 package domain.level;
 
 
-import domain.Position;
-import domain.Treasure;
+import domain.items.Treasure;
 import domain.items.*;
 import domain.monsters.*;
 
@@ -50,10 +49,10 @@ public class EntityGenerator {
                 return generateRandomPotion();
             case FOOD:
                 return generateRandomFood();
-            case TREASURE:
-                return generateRandomTreasure();
             case SCROLL:
                 return generateRandomScroll();
+            case TREASURE:
+                return generateRandomTreasure();
             default:
                 return generateRandomFood();
         }
@@ -110,7 +109,7 @@ public class EntityGenerator {
 
     private static String generatePotionName(ConsumableType type) {
         String[] prefixesForHeal = {"Живая вода", "Активированный уголь", "Подорожник", "Зелье исцеления"};
-        String[] prefixesForStrength = {"Балтика 9", "Cветлое нефильтрованное", "Сила Огра"};
+        String[] prefixesForStrength = {"Балтика 9", "Cветлое нефильтрованное", "Сила Огра", "Шнапс бабы Зины"};
         String[] prefixesForDexterity = {"Скользкий тип", "Нео", "Я у мамы вор"};
         String prefix;
         if (type.equals(ConsumableType.HEALTH)) {

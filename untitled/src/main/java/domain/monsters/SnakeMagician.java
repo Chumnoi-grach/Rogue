@@ -1,5 +1,6 @@
 package domain.monsters;
 
+import com.googlecode.lanterna.TextColor;
 import domain.Position;
 import domain.level.Room;
 import domain.player.Player;
@@ -101,5 +102,9 @@ public class SnakeMagician extends Enemy {
     @Override
     public char getDisplayChar() {
         return 's';
+    }
+    @Override
+    public TextColor getDisplayColor() {
+        return TextColor.ANSI.WHITE;
     }
 }

@@ -2,6 +2,8 @@ package domain.level;
 
 import domain.Entity;
 import domain.Position;
+import domain.items.BaseItem;
+import domain.monsters.Enemy;
 
 import java.util.*;
 
@@ -9,7 +11,6 @@ public class Level {
     private final int levelNumber;
     private final Room[] rooms;
     private final List<Corridor> corridors;
-    //private final Map<Position, Entity> entities; // позиция -> сущность
     private final LevelUnits units;
     private int startRoom;
     private int endRoom;
@@ -20,7 +21,6 @@ public class Level {
         this.rooms = rooms;
         this.corridors = corridors; // коридоры - список одномерных палок. С координатами начала и конца
         this.units = new LevelUnits();
-        //this.entities = new HashMap<>();
     }
 
     public Room[] getRooms() {
@@ -51,10 +51,6 @@ public class Level {
         this.endRoom = endRoom;
     }
 
-    public int getEndRoom() {
-        return endRoom;
-    }
-
     public void setStairsDown(Position stairsDown) {
         this.stairsDown = stairsDown;
 
@@ -64,13 +60,6 @@ public class Level {
         return stairsDown;
     }
 
-    /**
-     * Добавление происходит на уровень и в комнату
-     * <p>Проверяет позицию сущности, ее нахождение в комнате </p>
-     * @param entity
-     * @param roomNumber
-     * @return
-     */
     public boolean addEntity(Entity entity, int roomNumber) {
         if (roomNumber < 0 || roomNumber >= rooms.length) {
             return false;
@@ -90,6 +79,7 @@ public class Level {
 
         // Проверяем, свободна ли позиция в комнате
         if (!room.isPositionFree(entity.getPosition())) {
+            System.out.println("Позиция занята: " + entity.getPosition());
             return false;
         }
 
@@ -106,6 +96,10 @@ public class Level {
         }
 
         return false;
+    }
+
+    public void deleteEntity(Entity entity) {
+        units.deleteEntity(entity);
     }
 
     public List<Position> getFreePositionsInRoom(int roomNumber) {
@@ -135,32 +129,86 @@ public class Level {
         return freePositions;
     }
 
+
+ //Получить список свободных позиций в комнате вокруг указанной точки
+     public List<Position> getFreeNearPositions(Position current) {
+        int roomNumber = findRoomByPosition(current);
+        if (roomNumber == -1) {
+            return null; // точка не в комнате
+        }
+
+        Room room = rooms[roomNumber];
+        List<Position> freePositions = new ArrayList<>();
+
+        // Проверяем все 8 направлений (включая диагонали)
+        int[] dx = {-1, 0, 1, -1, 1, -1, 0, 1};
+        int[] dy = {-1, -1, -1, 0, 0, 1, 1, 1};
+
+        for (int i = 0; i < dx.length; i++) {
+            Position checkPos = new Position(
+                    current.getX() + dx[i],
+                    current.getY() + dy[i]
+            );
+
+            // Проверяем, что позиция внутри комнаты
+            if (!room.isPositionInRoom(checkPos)) {
+                continue;
+            }
+
+            if (!room.isPositionFree(checkPos)) {
+                continue;
+            }
+
+            // Проверяем, что это не лестница вниз
+            if (checkPos.equal(stairsDown)) {
+                continue;
+            }
+
+            // Все проверки пройдены - позиция свободна
+            freePositions.add(checkPos);
+        }
+
+        // 3. Возвращаем null, если свободных позиций нет
+        return freePositions.isEmpty() ? null : freePositions;
+    }
+
+    //найти номер комнаты по позиции. Дверь тоже учитывается
+    public int findRoomByPosition(Position position) {
+        for (int i = 0; i < rooms.length; i++) {
+            if (rooms[i].isPositionInRoom(position) || rooms[i].isPositionInDoor(position)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public Corridor findCorridorByPosition(Position position) {
+        for (Corridor corridor : corridors) {
+            if (corridor.positionInCorridor(position)) {
+                return corridor;
+            }
+        }
+        return null;
+    }
+
     public Set<Entity> getAllEntities() {
         return units.getAllEntities();
     }
-    //    private static final int[][] ROOM_COORDS = {
-//            {0, 0, 22, 9},    // комната 1
-//            {25, 0, 47, 9},   // комната 2
-//            {50, 0, 72, 9},   // комната 3
-//            {0, 11, 22, 20},  // комната 4
-//            {25, 11, 47, 20}, // комната 5
-//            {50, 11, 72, 20}, // комната 6
-//            {0, 22, 22, 30},  // комната 7
-//            {25, 22, 47, 30}, // комната 8
-//            {50, 22, 72, 30}  // комната 9
-//    };
-//
-//    public Level(int level) {
-//        this.rooms = generateRooms();
-//    }
-//
-//    private ArrayList<Room> generateRooms() {
-//        ArrayList<Room> rooms = new ArrayList<>(9);
-//        for (int i = 0; i < 9; i++) {
-//            Position min = new Position(ROOM_COORDS[i][0], ROOM_COORDS[i][1]);
-//            Position max = new Position(ROOM_COORDS[i][2], ROOM_COORDS[i][3]);
-//            rooms.add(new Room(min, max));
-//        }
-//        return rooms;
-//    }
+
+    public Entity getEnemyByPos(Position pos) {
+        Entity entity = units.findEntityAt(pos);
+        if (entity instanceof Enemy) {
+            return entity;
+        }
+        return null;
+    }
+
+    public Entity getBaseItemByPos(Position pos) {
+        Entity entity = units.findEntityAt(pos);
+        if (entity instanceof BaseItem) {
+            return entity;
+        }
+        return null;
+    }
+
 }

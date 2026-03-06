@@ -1,5 +1,6 @@
 package domain.monsters;
 
+import com.googlecode.lanterna.TextColor;
 import domain.Position;
 import domain.items.BaseItem;
 import domain.level.Room;
@@ -90,5 +91,9 @@ public class Zombie extends Enemy {
     @Override
     public char getDisplayChar() {
         return 'z';
+    }
+    @Override
+    public TextColor getDisplayColor() {
+        return TextColor.ANSI.GREEN;
     }
 }

@@ -1,5 +1,6 @@
 package domain.monsters;
 
+import com.googlecode.lanterna.TextColor;
 import domain.Position;
 import domain.level.Room;
 import domain.player.Player;
@@ -93,5 +94,9 @@ public class Ghost extends Enemy {
     @Override
     public char getDisplayChar() {
         return isInvisible ? ' ' : 'g';
+    }
+    @Override
+    public TextColor getDisplayColor() {
+        return TextColor.ANSI.WHITE;
     }
 }

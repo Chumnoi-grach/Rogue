@@ -1,5 +1,6 @@
 package domain.monsters;
 
+import com.googlecode.lanterna.TextColor;
 import domain.Character;
 import domain.Position;
 import domain.level.Room;
@@ -135,9 +136,9 @@ public class Ogre extends Enemy {
         if (damage <= 0 || !(fromUnit instanceof Player)) return false;
 
 
-        this.currentHealth -= damage;
-        if (this.currentHealth < 0) {
-            this.currentHealth = 0;
+        this.health -= damage;
+        if (this.health < 0) {
+            this.health = 0;
         }
         if (this.isAlive()){
             counterattack((Player) fromUnit);
@@ -157,5 +158,9 @@ public class Ogre extends Enemy {
     @Override
     public char getDisplayChar() {
         return 'O';
+    }
+    @Override
+    public TextColor getDisplayColor() {
+        return TextColor.ANSI.YELLOW_BRIGHT;
     }
 }
