@@ -93,7 +93,7 @@ public class Ghost extends Enemy {
 
     @Override
     public char getDisplayChar() {
-        return isInvisible ? ' ' : 'g';
+        return isInvisible ? '.' : 'g';
     }
     @Override
     public TextColor getDisplayColor() {

@@ -49,21 +49,18 @@ public class Game {
 
         //проверить не спит ли игрок
 
-
         Entity baseItem = level.getBaseItemByPos(newPosition);
-        Entity enemy = level.getEnemyByPos(newPosition);
-        //проверка монстра:
-        //нанести удар
-        //если удар убил монстра: 1.забираем золото, 2.встаем на клетку
-        if (enemy != null) {
-            setGameLog("Игрок атаковал " + ((Enemy) enemy).getType() +
-            enemy.toString());
-            player.attack((Enemy) enemy);
-            //if(((Enemy) enemy).isAlive() )
-            // забрать золото
-            // удалить моба с карты
+        Enemy enemy = (Enemy) level.getEnemyByPos(newPosition);
 
-        } else if (checkBounds(newPosition)) { //Проверка границ комнат и, коридоров
+        if (enemy != null && !player.isAsleep()) {
+            setGameLog("Игрок атаковал " + enemy.getType() + enemy.toString());
+            player.attack(enemy);
+            if (!enemy.isAlive()) {
+                setGameLog(enemy.getType() + " убит. Получено " + enemy.getTreasureValue() + " золота.");
+                player.setScore(enemy.getTreasureValue());
+                level.deleteEntity(enemy);
+            }
+        } else if (!player.isAsleep() && checkBounds(newPosition)) { //Проверка границ комнат и, коридоров
             player.setPosition(newPosition);
         }
 
@@ -74,8 +71,9 @@ public class Game {
         if (baseItem != null) {
             if (player.pickUpItem((Backpackable) baseItem) ) {
                 level.deleteEntity(baseItem);
-                setGameLog("Поднял " + baseItem.toString());
+                setGameLog("Игрок поднял " + baseItem.toString());
             } else {
+                //Рюкзак полон. Просто печатаем название предмета под ногами
                 setGameLog(baseItem.toString());
             }
         }
