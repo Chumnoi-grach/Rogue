@@ -33,7 +33,7 @@ public class Ghost extends Enemy {
 
     private boolean isInvisible = false;
     private int invisibleTurns = 0;
-    private boolean inCombat = false;
+    //private boolean inCombat = false;
 
     public Ghost(Position position) {
         super(position, 20, 20, 20, 5,
@@ -62,6 +62,8 @@ public class Ghost extends Enemy {
                 }
             }
         } else {
+            isInvisible = false;
+            invisibleTurns = 0;
             chasePlayer(currentRoom, player);
         }
     }
