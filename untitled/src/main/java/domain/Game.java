@@ -1,5 +1,8 @@
 package domain;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import datalayer.GameStats;
 import domain.items.*;
 import domain.level.*;
 import domain.player.Player;
@@ -12,18 +15,38 @@ import java.util.Random;
 public class Game {
     private Level level;
     private Player player;
-    private Generation generator = new Generation();
-    private int currentRoom = -1;//-1 если игрок не в комнате
+    private Generation generator;
+    private int currentRoom;
     private String gameLog;
-    private ItemType backpackCurrentItems; // Текущая вкладка рюкзака
+    private ItemType backpackCurrentItems;
     private static final Random RANDOM = new Random();
     private Exploration exploration;
+    private GameStats gameStats;
+
+//    private static final Gson gson = new GsonBuilder()
+//            .setPrettyPrinting()
+//            .create();
+
+    private static final Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .registerTypeAdapter(Entity.class, new EntityAdapter())
+            .create();
+
+    public Game() {
+        this.generator = new Generation();
+        this.currentRoom = -1;
+    }
 
     public Game(String name) {
+        this(); // вызываем пустой конструктор
         this.player = new Player(name, null);
+        this.gameStats = new GameStats(name);
 
         // генерируем первый уровень
         generateLevel(1);
+
+        // Создаем объект для статистики игры
+        this.gameStats = new GameStats(name);
 
         for (int i = 0; i < 9; i++) {
             player.getBackpack().addItem(EntityGenerator.generateRandomFood());
@@ -47,24 +70,27 @@ public class Game {
     private void setNewPosition(Position newPosition) {
         setGameLog("");
 
-        //проверить не спит ли игрок
-
-
         Entity baseItem = level.getBaseItemByPos(newPosition);
-        Entity enemy = level.getEnemyByPos(newPosition);
-        //проверка монстра:
-        //нанести удар
-        //если удар убил монстра: 1.забираем золото, 2.встаем на клетку
-        if (enemy != null) {
-            setGameLog("Игрок атаковал " + ((Enemy) enemy).getType() +
-            enemy.toString());
-            player.attack((Enemy) enemy);
-            //if(((Enemy) enemy).isAlive() )
-            // забрать золото
-            // удалить моба с карты
+        Enemy enemy = (Enemy) level.getEnemyByPos(newPosition);
 
-        } else if (checkBounds(newPosition)) { //Проверка границ комнат и, коридоров
+        if (enemy != null && !player.isAsleep()) {
+            setGameLog("Игрок атаковал " + enemy.getType() + enemy.toString());
+            int damage = player.attack(enemy);
+            if (damage == 0) {
+                gameStats.addMiss();
+            } else if (damage > 0) {
+                gameStats.addAttack();
+            }
+            if (!enemy.isAlive()) {
+                setGameLog(enemy.getType() + " убит. Получено " + enemy.getTreasureValue() + " золота.");
+                player.setScore(enemy.getTreasureValue());
+                gameStats.addScore(enemy.getTreasureValue());
+                gameStats.addKill();
+                level.deleteEntity(enemy);      //Удалить животное
+            }
+        } else if (!player.isAsleep() && checkBounds(newPosition)) { //Проверка границ комнат и, коридоров
             player.setPosition(newPosition);
+            gameStats.addStep();    //добавить шаг в стату
         }
 
         player.processTurn();
@@ -74,8 +100,9 @@ public class Game {
         if (baseItem != null) {
             if (player.pickUpItem((Backpackable) baseItem) ) {
                 level.deleteEntity(baseItem);
-                setGameLog("Поднял " + baseItem.toString());
+                setGameLog("Игрок поднял " + baseItem.toString());
             } else {
+                //Рюкзак полон. Просто печатаем название предмета под ногами
                 setGameLog(baseItem.toString());
             }
         }
@@ -88,7 +115,6 @@ public class Game {
 
         if (player.getHealth() == 0) {
             //Игрок убит
-            System.out.println("Игрок убит");
             setGameLog("Вы были убиты! Конец игры!");
         }
     }
@@ -116,26 +142,16 @@ public class Game {
                 setGameLog("You are won game!");
             } else {
                 generateLevel(level.getLevelNumber() + 1);
+                gameStats.addLevel();
+
+    // todo После прохождения каждого уровня необходимо сохранять полученную статистику и номер пройденного уровня.
+
             }
         }
     }
     
     public void updateVisible() {
         exploration.updateVisibility();
-    }
-
-    public Exploration getExploration() {
-        return exploration;
-    }
-
-
-
-    public Level getLevel() {
-        return level;
-    }
-
-    public Player getPlayer() {
-        return  player;
     }
 
     private void moveAllEnemies() {
@@ -216,6 +232,13 @@ public class Game {
             }
         } else {//используем еду, зелье, свиток
             backpackItemsList.get(itemIndex).apply(player);
+
+            switch (backpackItemsList.get(itemIndex).getType()) {
+                case FOOD -> gameStats.addFoodConsumed();
+                case POTION -> gameStats.addElixirConsumed();
+                case SCROLL -> gameStats.addScrollRead();
+            }
+
             backpackItemsList.remove(itemIndex);
         }
     }
@@ -246,21 +269,77 @@ public class Game {
         return randomPos;
     }
 
+    // Геттеры и сеттеры для ВСЕХ полей (нужны Gson)
+    public Level getLevel() {
+        return level;
+    }
 
-    public void setGameLog(String str) {
-        gameLog = str;
+    public void setLevel(Level level) {
+        this.level = level;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public Generation getGenerator() {
+        return generator;
+    }
+
+    public void setGenerator(Generation generator) {
+        this.generator = generator;
+    }
+
+    public int getCurrentRoom() {
+        return currentRoom;
+    }
+
+    public void setCurrentRoom(int currentRoom) {
+        this.currentRoom = currentRoom;
     }
 
     public String getGameLog() {
         return gameLog;
     }
 
-    public void setBackpackCurrentItems(ItemType itemType) {
-        backpackCurrentItems = itemType;
+    public void setGameLog(String gameLog) {
+        this.gameLog = gameLog;
     }
 
     public ItemType getBackpackCurrentItems() {
         return backpackCurrentItems;
     }
 
+    public void setBackpackCurrentItems(ItemType backpackCurrentItems) {
+        this.backpackCurrentItems = backpackCurrentItems;
+    }
+
+    public Exploration getExploration() {
+        return exploration;
+    }
+
+    public void setExploration(Exploration exploration) {
+        this.exploration = exploration;
+    }
+
+    public GameStats getGameStats() {
+        return gameStats;
+    }
+
+    public void setGameStats(GameStats gameStats) {
+        this.gameStats = gameStats;
+    }
+
+    // МЕТОДЫ СЕРИАЛИЗАЦИИ
+    public String toJson() {
+        return gson.toJson(this);
+    }
+
+    public static Game fromJson(String jsonString) {
+        return gson.fromJson(jsonString, Game.class);
+    }
 }
