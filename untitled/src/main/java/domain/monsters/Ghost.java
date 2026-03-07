@@ -27,7 +27,7 @@ public class Ghost extends Enemy {
         super();
         this.isInvisible = false;
         this.invisibleTurns = 0;
-        this.inCombat = false;
+        //this.inCombat = false;
     }
 
     public Ghost(int enemyLevel, Position position){
