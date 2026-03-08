@@ -53,17 +53,29 @@ public class GameStats {
 
     // Геттеры и сеттеры...
     public String getPlayerName() { return playerName; }
-    public void setPlayerName(String playerName) { this.playerName = playerName; }
 
     public int getScore() { return score; }
-    public void setScore(int score) { this.score = score; }
 
     public int getLevel() { return level; }
-    public void setLevel(int level) { this.level = level; }
 
     public int getConsumedFoods() { return consumedFoods; }
-    public void setConsumedFoods(int consumedFoods) { this.consumedFoods = consumedFoods; }
 
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public void setConsumedFoods(int consumedFoods) {
+        this.consumedFoods = consumedFoods;
+    }
     public int getConsumedElixirs() { return consumedElixirs; }
     public void setConsumedElixirs(int consumedElixirs) { this.consumedElixirs = consumedElixirs; }
 
