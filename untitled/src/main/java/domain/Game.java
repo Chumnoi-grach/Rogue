@@ -145,6 +145,7 @@ public class Game {
         if (player.getPosition().equal(level.getStairsDown())) {
             if (level.getLevelNumber() == 20) {
                 setGameLog("You are won game!");
+                gameStats.setResult("completed");
                 LoadSaveData.saveStatistics(gameStats);
             } else {
                 generateLevel(level.getLevelNumber() + 1);

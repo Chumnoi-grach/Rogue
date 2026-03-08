@@ -12,7 +12,6 @@ public class GameStats {
     private long missed;
     private long steps;
     private String result; // "death", "completed", "quit"
-    private String timestamp;
 
     // Пустой конструктор для Gson
     public GameStats() {
@@ -26,7 +25,6 @@ public class GameStats {
         this.missed = 0;
         this.steps = 0;
         this.result = "unknown";
-        this.timestamp = java.time.LocalDateTime.now().toString();
     }
 
     public GameStats(String name) {
@@ -45,7 +43,6 @@ public class GameStats {
         this.missed = 0;
         this.steps = 0;
         this.result = "unknown";
-        this.timestamp = java.time.LocalDateTime.now().toString();
     }
 
     @Override
@@ -87,9 +84,6 @@ public class GameStats {
 
     public String getResult() { return result; }
     public void setResult(String result) { this.result = result; }
-
-    public String getTimestamp() { return timestamp; }
-    public void setTimestamp(String timestamp) { this.timestamp = timestamp; }
 
     // Инкременторы
     public void addStep() { steps++; }
