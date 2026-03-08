@@ -133,6 +133,12 @@ public class Game {
                 gameStats.setResult("completed");
                 LoadSaveData.saveStatistics(gameStats);
             } else {
+                GameStats levelStats = new GameStats(player.getName());
+                copyStats(levelStats, gameStats);
+                levelStats.setResult("level up");
+                levelStats.setLevel(level.getLevelNumber());
+                LoadSaveData.saveStatistics(levelStats);
+
                 generateLevel(level.getLevelNumber() + 1);
                 gameStats.addLevel();
 
@@ -140,6 +146,17 @@ public class Game {
 
             }
         }
+    }
+
+    private void copyStats(GameStats dest, GameStats src) {
+        dest.setScore(src.getScore());
+        dest.setConsumedFoods(src.getConsumedFoods());
+        dest.setConsumedElixirs(src.getConsumedElixirs());
+        dest.setReadedScrolls(src.getReadedScrolls());
+        dest.setKills(src.getKills());
+        dest.setAttacks(src.getAttacks());
+        dest.setMissed(src.getMissed());
+        dest.setSteps(src.getSteps());
     }
     
     public void updateVisible() {
