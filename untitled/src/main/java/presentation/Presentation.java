@@ -71,8 +71,7 @@ public class Presentation {
         try {
             terminal = factory.createTerminal();
             // Проверяем, является ли терминал SwingTerminalFrame
-            if (terminal instanceof SwingTerminalFrame) {
-                SwingTerminalFrame swingTerminal = (SwingTerminalFrame) terminal;
+            if (terminal instanceof SwingTerminalFrame swingTerminal) {
                 // Центрируем окно на экране
                 swingTerminal.setLocationRelativeTo(null); // null = относительно центра экрана
             }
@@ -285,9 +284,9 @@ public class Presentation {
         List<Backpackable> backpackList =  game.getPlayer().getBackpack().getListByType(game.getBackpackCurrentItems());
 
         //Определить ширину рюкзака по самой длиной строке содержимого
-        for (int i = 0; i < backpackList.size(); i++) {
-            if (backpackList.get(i).toString().length() > backpackWidth)
-                backpackWidth = backpackList.get(i).toString().length();
+        for (Backpackable backpackable : backpackList) {
+            if (backpackable.toString().length() > backpackWidth)
+                backpackWidth = backpackable.toString().length();
         }
 
         if (game.getBackpackCurrentItems() == ItemType.WEAPON &&
@@ -392,13 +391,13 @@ public class Presentation {
 
     private char getDoorChar(int doorIndex) {
         // Определяем символ двери по направлению
-        switch (doorIndex) {
-            case 0: return '─'; // Северная дверь (горизонтальная)
-            case 1: return '│'; // Восточная дверь (вертикальная)
-            case 2: return '─'; // Южная дверь (горизонтальная)
-            case 3: return '│'; // Западная дверь (вертикальная)
-            default: return '+';
-        }
+        return switch (doorIndex) {
+            case 0 -> '─'; // Северная дверь (горизонтальная)
+            case 1 -> '│'; // Восточная дверь (вертикальная)
+            case 2 -> '─'; // Южная дверь (горизонтальная)
+            case 3 -> '│'; // Западная дверь (вертикальная)
+            default -> '+';
+        };
     }
 
     private void printVisibleEntities(Level level, Exploration exploration) throws IOException {
