@@ -403,24 +403,37 @@ public class Presentation {
     private void printVisibleEntities(Level level, Exploration exploration) throws IOException {
         Set<Entity> allEntities = level.getAllEntities();
 
+        // Сначала рисуем все предметы
         for (Entity entity : allEntities) {
-            // Пропускаем игрока (его отображаем отдельно)
-            if (entity instanceof Player) continue;
+            // Пропускаем игрока и монстров
+            if (entity instanceof Player || entity instanceof Enemy) continue;
 
             Position pos = entity.getPosition();
             if (pos == null) continue;
 
-            // Рисуем сущность только если она видима
+            // Рисуем предмет только если он видим
             if (exploration.isCellVisible(pos)) {
                 if (entity instanceof BaseItem item) {
                     putCh(item.getDisplayChar(), pos.getX(), pos.getY(),
                             COLORITEM, COLORBGROUND);
-                } else if (entity instanceof Enemy enemy) {
-                    if (enemy instanceof Ghost ghost) {
-                        // Приводим к Ghost
-                        if (ghost.isInvisible()) {
-                            continue;
-                        }
+                }
+            }
+        }
+
+        // Затем рисуем всех монстров (они будут поверх предметов)
+        for (Entity entity : allEntities) {
+            // Пропускаем игрока и предметы
+            if (entity instanceof Player || entity instanceof BaseItem) continue;
+
+            Position pos = entity.getPosition();
+            if (pos == null) continue;
+
+            // Рисуем монстра только если он видим
+            if (exploration.isCellVisible(pos)) {
+                if (entity instanceof Enemy enemy) {
+                    // Проверка на невидимость для Ghost
+                    if (enemy instanceof Ghost ghost && ghost.isInvisible()) {
+                        continue;
                     }
 
                     putCh(enemy.getDisplayChar(), pos.getX(), pos.getY(),
