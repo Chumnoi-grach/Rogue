@@ -64,6 +64,29 @@ public class GameStats {
     public int getConsumedFoods() { return consumedFoods; }
     public void setConsumedFoods(int consumedFoods) { this.consumedFoods = consumedFoods; }
 
+    public long getMissed() {
+        return missed;
+    }
+
+    public long getSteps() {
+        return steps;
+    }
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public void setConsumedFoods(int consumedFoods) {
+        this.consumedFoods = consumedFoods;
+    }
     public int getConsumedElixirs() { return consumedElixirs; }
     public void setConsumedElixirs(int consumedElixirs) { this.consumedElixirs = consumedElixirs; }
 
@@ -85,16 +108,39 @@ public class GameStats {
     public String getResult() { return result; }
     public void setResult(String result) { this.result = result; }
 
-    // Инкременторы
-    public void addStep() { steps++; }
-    public void addAttack() { attacks++; }
-    public void addMiss() { missed++; }
-    public void addKill() { kills++; }
-    public void addFoodConsumed() { consumedFoods++; }
-    public void addElixirConsumed() { consumedElixirs++; }
-    public void addScrollRead() { readedScrolls++; }
-    public void addScore(int points) { score += points; }
-    public void addLevel() { level++; }
+    public void addStep() {
+        steps++;
+    }
 
-    public void setFinalLevel(int level) { this.level = level; }
+    public void addAttack() {
+        attacks++;
+    }
+
+    public void addMiss() {
+        missed++;
+    }
+
+    public void addKill() {
+        kills++;
+    }
+
+    public void addFoodConsumed() {
+        consumedFoods++;
+    }
+
+    public void addElixirConsumed() {
+        consumedElixirs++;
+    }
+
+    public void addScrollRead() {
+        readedScrolls++;
+    }
+
+    public void addScore(int points) {
+        score += points;
+    }
+
+    public void addLevel() {
+        level++;
+    }
 }

@@ -2,13 +2,13 @@ package domain;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import datalayer.BackpackableAdapter;
+import datalayer.BaseItemAdapter;
+import datalayer.EnemyAdapter;
 import datalayer.GameStats;
 import datalayer.LoadSaveData;
 import domain.items.*;
-import domain.items.BackpackableAdapter;
-import domain.items.BaseItemAdapter;
 import domain.level.*;
-import domain.monsters.EnemyAdapter;
 import domain.player.Player;
 import domain.monsters.*;
 
@@ -50,25 +50,6 @@ public class Game {
 
         // генерируем первый уровень
         generateLevel(1);
-
-        // Создаем объект для статистики игры
-        this.gameStats = new GameStats(name);
-
-        for (int i = 0; i < 9; i++) {
-            player.getBackpack().addItem(EntityGenerator.generateRandomFood());
-        }
-
-        for (int i = 0; i < 9; i++) {
-            player.getBackpack().addItem(EntityGenerator.generateRandomWeapon());
-        }
-
-        for (int i = 0; i < 9; i++) {
-            player.getBackpack().addItem(EntityGenerator.generateRandomPotion());
-        }
-
-        for (int i = 0; i < 9; i++) {
-            player.getBackpack().addItem(EntityGenerator.generateRandomScroll());
-        }
 
         setGameLog("Game started");
     }
@@ -136,6 +117,10 @@ public class Game {
         // Создаем объект расчета тумана войны и хранения пройденных комнат и маршрутов
         exploration = new Exploration(level, player);
         exploration.markRoomVisited(currentRoom);
+
+        //отключить лимит на добавление предметов в комнатах (для сброса оружия из рюкзака)
+        level.setUnlimitedItemsAdd();
+
     }
 
 
@@ -257,7 +242,9 @@ public class Game {
         if (freePosToDrop != null) {
             //добавить currentWeapon в предметы на карте в указанную позицию
             currentWeapon.setPosition(freePosToDrop);
-            level.addItem(currentWeapon, currentRoom);
+            if (!level.addItem(currentWeapon, currentRoom)) {
+                return false;
+            }
             player.equipWeapon(null);
             return true;
         }
