@@ -3,6 +3,7 @@ package domain;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import datalayer.GameStats;
+import datalayer.LoadSaveData;
 import domain.items.*;
 import domain.items.BackpackableAdapter;
 import domain.items.BaseItemAdapter;
@@ -88,7 +89,7 @@ public class Game {
             }
             if (!enemy.isAlive()) {
                 setGameLog(enemy.getType() + " убит. Получено " + enemy.getTreasureValue() + " золота.");
-                player.setScore(enemy.getTreasureValue());
+                player.setScore(player.getScore() + enemy.getTreasureValue());
                 gameStats.addScore(enemy.getTreasureValue());
                 gameStats.addKill();
                 level.removeEnemy(enemy);      //Удалить животное
@@ -135,7 +136,6 @@ public class Game {
         // Создаем объект расчета тумана войны и хранения пройденных комнат и маршрутов
         exploration = new Exploration(level, player);
         exploration.markRoomVisited(currentRoom);
-
     }
 
 
@@ -145,6 +145,8 @@ public class Game {
         if (player.getPosition().equal(level.getStairsDown())) {
             if (level.getLevelNumber() == 20) {
                 setGameLog("You are won game!");
+                gameStats.setResult("completed");
+                LoadSaveData.saveStatistics(gameStats);
             } else {
                 generateLevel(level.getLevelNumber() + 1);
                 gameStats.addLevel();
