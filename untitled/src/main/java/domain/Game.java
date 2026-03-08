@@ -124,8 +124,6 @@ public class Game {
     }
 
 
-
-
     private void checkStairsDown() {
         if (player.getPosition().equal(level.getStairsDown())) {
             if (level.getLevelNumber() == 21) {
