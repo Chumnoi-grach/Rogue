@@ -15,6 +15,7 @@ public class GameLoop {
     private FSM_State state = FSM_State.START;
     private Game currentGame;
     private boolean running = true;
+    private FSM_State prev_state;
 
     public GameLoop(Presentation presentation) {
         this.presentation = presentation;
@@ -139,6 +140,7 @@ public class GameLoop {
                     loadGame();
                     break;
                 case '3':
+                    prev_state = FSM_State.START;
                     state = FSM_State.LEADERS;
                     break;
             }
@@ -175,6 +177,7 @@ public class GameLoop {
                     loadGame();
                     break;
                 case '5':
+                    prev_state = FSM_State.GAME;
                     state = FSM_State.LEADERS;
                     break;
             }
@@ -260,7 +263,7 @@ public class GameLoop {
 
     private void handleLeadersInput(KeyStroke key) {
         if (key.getKeyType() == KeyType.Escape) {
-            state = FSM_State.START;
+            state = prev_state;
         }
     }
 
