@@ -128,7 +128,7 @@ public class Game {
 
     private void checkStairsDown() {
         if (player.getPosition().equal(level.getStairsDown())) {
-            if (level.getLevelNumber() == 20) {
+            if (level.getLevelNumber() == 21) {
                 setGameLog("You are won game!");
                 gameStats.setResult("completed");
                 LoadSaveData.saveStatistics(gameStats);
@@ -141,9 +141,6 @@ public class Game {
 
                 generateLevel(level.getLevelNumber() + 1);
                 gameStats.addLevel();
-
-    // todo После прохождения каждого уровня необходимо сохранять полученную статистику и номер пройденного уровня.
-
             }
         }
     }
