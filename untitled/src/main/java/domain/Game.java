@@ -50,25 +50,6 @@ public class Game {
         // генерируем первый уровень
         generateLevel(1);
 
-        // Создаем объект для статистики игры
-        this.gameStats = new GameStats(name);
-
-        for (int i = 0; i < 9; i++) {
-            player.getBackpack().addItem(EntityGenerator.generateRandomFood());
-        }
-
-        for (int i = 0; i < 9; i++) {
-            player.getBackpack().addItem(EntityGenerator.generateRandomWeapon());
-        }
-
-        for (int i = 0; i < 9; i++) {
-            player.getBackpack().addItem(EntityGenerator.generateRandomPotion());
-        }
-
-        for (int i = 0; i < 9; i++) {
-            player.getBackpack().addItem(EntityGenerator.generateRandomScroll());
-        }
-
         setGameLog("Game started");
     }
 

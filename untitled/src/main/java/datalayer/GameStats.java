@@ -89,7 +89,6 @@ public class GameStats {
         return steps;
     }
 
-    // Сеттеры для всех полей (нужны Gson)
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
@@ -130,7 +129,6 @@ public class GameStats {
         this.steps = steps;
     }
 
-    // Инкременторы
     public void addStep() {
         steps++;
     }
